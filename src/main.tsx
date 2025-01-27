@@ -1,16 +1,18 @@
-import { StrictMode } from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Homepage from './routes/Homepage.tsx';
-import BlogListPage from './routes/BlogListPage.tsx';
-import Write from './routes/crateBlog.tsx';
-import LoginPage from './routes/LoginPage.tsx';
-import RegisterPage from './routes/RegisterPage.tsx';
-import SingleBlogPage from './routes/SingleBlogPage.tsx';
+import Homepage from './routes/Homepage';
+import BlogListPage from './routes/BlogListPage';
+import Write from './routes/crateBlog';
+import LoginPage from './routes/LoginPage';
+import RegisterPage from './routes/RegisterPage';
+import SingleBlogPage from './routes/SingleBlogPage';
+import MainLayout from './layouts/MainLayout';
 
 const router = createBrowserRouter([
   {
+    element: <MainLayout />,
     children: [
       {
         path: '/',
@@ -44,7 +46,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
   </StrictMode>
