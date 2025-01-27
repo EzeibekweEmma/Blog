@@ -6,7 +6,7 @@ const Navbar = () => {
   const [open, isOpen] = useState(false);
 
   return (
-    <nav className="flex justify-center bg-[#4D869C] text-[#FEFBF6] z-50">
+    <nav className="flex justify-center bg-[#2c586a] text-[#FEFBF6] z-50">
       <div className="w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]">
         <div className="w-full h-16 md:h-20 flex items-center justify-between">
           {/* LOGO */}
@@ -43,7 +43,7 @@ const Navbar = () => {
             </div>
             {/* MOBILE LINK LIST */}
             <div
-              className={`w-full h-screen bg-[#4D869C] flex flex-col items-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out pt-20 ${
+              className={`w-full h-screen bg-[#2c586a] flex flex-col items-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out pt-20 ${
                 open ? '-right-0' : '-right-[100%]'
               }`}
             >
@@ -60,7 +60,7 @@ const Navbar = () => {
                 About
               </Link>
               <Link to="/login" onClick={() => isOpen(false)}>
-                <button className="py-2 px-4 rounded-3xl hover:bg-[#4D869C] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#4D869C] border-[#FEFBF6] border-2">
+                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#2c586a] border-[#FEFBF6] border-2">
                   Login 👋
                 </button>
               </Link>
@@ -74,7 +74,7 @@ const Navbar = () => {
             <Link to="/">About</Link>
             <SignedOut>
               <Link to="/login">
-                <button className="py-2 px-4 rounded-3xl hover:bg-[#4D869C] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#4D869C] border-[#FEFBF6] border-2">
+                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#2c586a] border-[#FEFBF6] border-2">
                   Login 👋
                 </button>
               </Link>
