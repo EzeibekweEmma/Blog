@@ -7,16 +7,18 @@ const BlogCard = (props: { isFeatured?: boolean }) => {
       className={`bg-white rounded-lg shadow-lg ${
         isFeatured
           ? 'p-4 h-full'
-          : 'flex gap-3 p-2 justify-between items-center'
+          : 'sm:flex sm:gap-3 p-4 sm:p-2 sm:justify-between sm:items-center'
       }`}
     >
       {/* image */}
-      <div
-        className={`bg-[#2c586a] rounded-lg ${
-          isFeatured ? 'h-52' : 'h-40 w-48'
-        }`}
-      />
-      <div className={isFeatured ? 'mt-4' : ''}>
+      <Link to="/blog">
+        <div
+          className={`bg-[#2c586a] rounded-lg ${
+            isFeatured ? 'h-52' : 'h-52 sm:h-40 sm:w-48'
+          }`}
+        />
+      </Link>
+      <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0'}>
         <Link
           to="/blog"
           className="text-lg font-semibold text-[#2c586a] hover:underline"
@@ -24,15 +26,21 @@ const BlogCard = (props: { isFeatured?: boolean }) => {
           Lorem ipsum dolor sit amet.
         </Link>
         <p className="text-sm mt-3">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-          quos.
-        </p>
-        <div className="flex items-center mt-3 text-sm gap-3">
-          <Link to="/blog" className="text-[#2c586a] hover:underline">
-            Read More
+          <span>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+            quos.
+          </span>
+          <Link
+            to="/blog"
+            className="text-sm text-[#2c586a] hover:underline ml-2"
+          >
+            Read more
           </Link>
-          <span>•</span>
-          <span className="text-xs">2 days ago</span>
+        </p>
+        <div className="flex items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
+          <span>By John</span>
+          <span className="text-sm">•</span>
+          <span>2 days ago</span>
         </div>
       </div>
     </div>
