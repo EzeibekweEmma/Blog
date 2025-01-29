@@ -6,7 +6,7 @@ const Navbar = () => {
   const [open, isOpen] = useState(false);
 
   return (
-    <nav className="flex justify-center bg-[#2c586a] text-[#FEFBF6] z-50">
+    <nav className="flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50">
       <div className="w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]">
         <div className="w-full h-16 md:h-20 flex items-center justify-between">
           {/* LOGO */}
@@ -25,17 +25,17 @@ const Navbar = () => {
               {/* {open ? "X" : "☰"} */}
               <div className="flex flex-col gap-[5.4px]">
                 <div
-                  className={`h-[3px] rounded-md w-6 bg-[#FEFBF6] origin-left transition-all ease-in-out ${
+                  className={`h-[3px] rounded-md w-6 bg-[#f3f8f6] origin-left transition-all ease-in-out ${
                     open && 'rotate-45'
                   }`}
                 />
                 <div
-                  className={`h-[3px] rounded-md w-6 bg-[#FEFBF6] transition-all ease-in-out ${
+                  className={`h-[3px] rounded-md w-6 bg-[#f3f8f6] transition-all ease-in-out ${
                     open && 'opacity-0'
                   }`}
                 />
                 <div
-                  className={`h-[3px] rounded-md w-6 bg-[#FEFBF6] origin-left transition-all ease-in-out ${
+                  className={`h-[3px] rounded-md w-6 bg-[#f3f8f6] origin-left transition-all ease-in-out ${
                     open && '-rotate-45'
                   }`}
                 />
@@ -60,7 +60,7 @@ const Navbar = () => {
                 About
               </Link>
               <Link to="/login" onClick={() => isOpen(false)}>
-                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#2c586a] border-[#FEFBF6] border-2">
+                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">
                   Login 👋
                 </button>
               </Link>
@@ -74,7 +74,7 @@ const Navbar = () => {
             <Link to="/">About</Link>
             <SignedOut>
               <Link to="/login">
-                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#FEFBF6] hover:text-[#FEFBF6] text-[#2c586a] border-[#FEFBF6] border-2">
+                <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">
                   Login 👋
                 </button>
               </Link>
