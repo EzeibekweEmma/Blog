@@ -11,7 +11,7 @@ const BlogCard = (props: { isFeatured?: boolean }) => {
       }`}
     >
       {/* image */}
-      <Link to="/blog">
+      <Link to="/blog/slug">
         <div
           className={`bg-[#2c586a] rounded-lg ${
             isFeatured ? 'h-52' : 'h-52 sm:h-40 sm:w-48'
@@ -20,7 +20,7 @@ const BlogCard = (props: { isFeatured?: boolean }) => {
       </Link>
       <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0'}>
         <Link
-          to="/blog"
+          to="/blog/slug"
           className="text-lg font-semibold text-[#2c586a] hover:underline"
         >
           Lorem ipsum dolor sit amet.
@@ -31,7 +31,7 @@ const BlogCard = (props: { isFeatured?: boolean }) => {
             quos.
           </span>
           <Link
-            to="/blog"
+            to="/blog/slug"
             className="text-sm text-[#2c586a] hover:underline ml-2"
           >
             Read more

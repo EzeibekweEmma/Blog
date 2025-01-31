@@ -1,24 +1,16 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import PageWrapper from '../components/pageWrapper';
 import MainCategories from '../components/MainCategories';
 import FeaturedPosts from '../components/FeaturedPosts';
 import BlogCard from '../components/BlogCard';
+import Breadcrumb from '../components/Breadcrumb';
 
 const Homepage = () => {
   const blogs = ['', '', '', '', '', '', '', '', '', ''];
   return (
     <PageWrapper>
       <div className="mt-4 flex flex-col gap-4">
-        {/* BREADCRUMB */}
-        <div className="flex gap-2 text-sm">
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>
-          <span>•</span>
-          <span className="text-[#2c586a] font-semibold">
-            Blogs and Articles
-          </span>
-        </div>
+        <Breadcrumb />
         {/* INTRODUCTION */}
         <div className="flex items-center justify-between my-5">
           {/* titles */}
