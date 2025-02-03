@@ -21,18 +21,20 @@ const Search = () => {
   };
 
   return (
-    <div className="bg-[#b4c2c8] p-2 rounded-full flex items-center gap-2 w-full lg:w-fit">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="#2c586a"
-      >
-        <circle cx="10.5" cy="10.5" r="7.5" />
-        <line x1="16.5" y1="16.5" x2="22" y2="22" />
-      </svg>
+    <div className="bg-[#e6edf0] p-1.5 rounded-full flex items-center gap-2 w-full lg:w-fit">
+      <div className="p-1.5 rounded-full bg-[#f3f8f6]">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="#2c586a"
+        >
+          <circle cx="10.5" cy="10.5" r="7.5" />
+          <line x1="16.5" y1="16.5" x2="22" y2="22" />
+        </svg>
+      </div>
       <input
         type="text"
         placeholder="search for a blog..."
