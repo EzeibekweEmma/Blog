@@ -1,16 +1,13 @@
-// import { Link } from 'react-router-dom';
 import PageWrapper from '../components/pageWrapper';
 import MainCategories from '../components/MainCategories';
 import FeaturedPosts from '../components/FeaturedPosts';
 import BlogCard from '../components/BlogCard';
-import Breadcrumb from '../components/Breadcrumb';
 
 const Homepage = () => {
   const blogs = ['', '', '', '', '', '', '', '', '', ''];
   return (
     <PageWrapper>
       <div className="mt-4 flex flex-col gap-4">
-        <Breadcrumb />
         {/* INTRODUCTION */}
         <div className="flex items-center justify-between my-5">
           {/* titles */}

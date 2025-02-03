@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import Search from './Search';
-// import Search from "./Search";
 
 const MainCategories = () => {
   const categories = [
@@ -24,7 +23,6 @@ const MainCategories = () => {
           </Link>
         ))}
       </div>
-      {/* search */}
       <Search />
     </div>
   );
