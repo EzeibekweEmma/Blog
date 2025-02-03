@@ -2,12 +2,13 @@ import PageWrapper from '../components/pageWrapper';
 import MainCategories from '../components/MainCategories';
 import FeaturedPosts from '../components/FeaturedPosts';
 import BlogCard from '../components/BlogCard';
+import { Link } from 'react-router-dom';
 
 const Homepage = () => {
-  const blogs = ['', '', '', '', '', '', '', '', '', ''];
+  const blogs = ['', '', '', '', '', ''];
   return (
     <PageWrapper>
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="mt-4 mb-20 flex flex-col gap-4">
         {/* INTRODUCTION */}
         <div className="flex items-center justify-between my-5">
           {/* titles */}
@@ -64,7 +65,7 @@ const Homepage = () => {
         <div>
           <h1 className="mt-8 mb-4 text-2xl text-gray-600">Recent Blogs</h1>
           {blogs.length > 1 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {blogs.map((blog, index) => (
                 <div key={index} className="">
                   <BlogCard isFeatured />
@@ -72,6 +73,15 @@ const Homepage = () => {
               ))}
             </div>
           )}
+
+          <div className="flex justify-center mt-8">
+            <Link
+              to="/blogs"
+              className="bg-[#2c586a] text-[#f3f8f6] font-semibold py-3 px-4 rounded-3xl border-[#2c586a] border hover:bg-white hover:text-[#2c586a]"
+            >
+              See More Blog
+            </Link>
+          </div>
         </div>
       </div>
     </PageWrapper>

@@ -1,9 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const [open, isOpen] = useState(false);
+  const location = useLocation();
+
+  const navList = [
+    { name: 'Home', path: '/' },
+    { name: 'Blogs', path: '/blogs' },
+    { name: 'Saved Blogs', path: '/saved' },
+  ];
 
   return (
     <nav className="flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50">
@@ -47,18 +54,18 @@ const Navbar = () => {
                 open ? '-right-0' : '-right-[100%]'
               }`}
             >
-              <Link to="/" onClick={() => isOpen(false)}>
-                Home
-              </Link>
-              <Link to="/blogs?sort=trending" onClick={() => isOpen(false)}>
-                Trending
-              </Link>
-              <Link to="/blogs?sort=popular" onClick={() => isOpen(false)}>
-                Most Popular
-              </Link>
-              <Link to="/" onClick={() => isOpen(false)}>
-                About
-              </Link>
+              {navList.map((navItem, index) => (
+                <Link
+                  to={navItem.path}
+                  key={index}
+                  onClick={() => isOpen(false)}
+                  className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out ${
+                    location.pathname === navItem.path && 'border-b-2'
+                  }`}
+                >
+                  {navItem.name}
+                </Link>
+              ))}
               <Link to="/login" onClick={() => isOpen(false)}>
                 <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">
                   Login 👋
@@ -68,10 +75,17 @@ const Navbar = () => {
           </div>
           {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-            <Link to="/">Home</Link>
-            <Link to="/blogs?sort=trending">Trending</Link>
-            <Link to="/blogs?sort=popular">Most Popular</Link>
-            <Link to="/">About</Link>
+            {navList.map((navItem, index) => (
+              <Link
+                to={navItem.path}
+                key={index}
+                className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out ${
+                  location.pathname === navItem.path && 'border-b-2'
+                }`}
+              >
+                {navItem.name}
+              </Link>
+            ))}
             <SignedOut>
               <Link to="/login">
                 <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">

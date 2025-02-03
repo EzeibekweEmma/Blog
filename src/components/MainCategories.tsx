@@ -1,7 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Search from './Search';
 
 const MainCategories = () => {
+  const location = useLocation();
+  const urlCategory = location.search
+    ? location.search.split('=')[1]?.replace(/%20/g, ' ')
+    : 'All Posts';
+
   const categories = [
     'All Posts',
     'Web Design',
@@ -17,7 +22,9 @@ const MainCategories = () => {
           <Link
             to={`/blogs?category=${category}`}
             key={index}
-            className="xl:text-lg font-medium hover:text-[#2c586a] hover:border-b-2 border-[#2c586a] transition-all ease-in-out"
+            className={`xl:text-lg font-medium hover:text-[#2c586a] hover:border-b-2 border-[#2c586a] transition-all ease-in-out ${
+              urlCategory === category && 'border-b-2'
+            }`}
           >
             {category}
           </Link>
