@@ -5,18 +5,29 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier . --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/eslint__js": "^8.42.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "eslint": "^9.19.0",
     "express": "^4.21.2",
-    "tsconfig-paths": "^4.2.0"
+    "prettier": "^3.4.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript-eslint": "^8.23.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/eslint": "^9.6.1",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.1",
     "nodemon": "^3.1.9",
