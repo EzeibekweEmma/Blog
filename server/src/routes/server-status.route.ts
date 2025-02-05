@@ -1,9 +1,11 @@
+import { getServerStatus } from '@/services'
 import express from 'express'
 
 const router = express.Router()
 
-router.get('/status', (req, res) => {
-  res.status(200).json({ status: 'Server is running' })
+router.get('/', (req, res) => {
+  const { data, status } = getServerStatus()
+  res.status(status).json(data)
 })
 
 export default router

@@ -1,14 +1,15 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import Router from './routes'
+import Router from '@/routes'
 import ServerStatus from './routes/server-status.route'
+import config from '@/config'
+import connectDB from '@/lib/connectDB'
 
 dotenv.config()
 
 const app: Express = express()
-const port = process.env.PORT || 3000
 
 app.use(cors())
 app.use(
@@ -32,6 +33,9 @@ app.use((req, res, next) => {
 app.use(ServerStatus)
 app.use('/api', Router)
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`)
+app.listen(config.app.PORT, () => {
+  connectDB()
+  console.log(
+    `[server]: Server is running at http://localhost:${config.app.PORT}`
+  )
 })
