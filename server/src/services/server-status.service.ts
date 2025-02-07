@@ -1,6 +1,6 @@
-import { ResponseT } from 'src/type'
+import { IResponse } from '@/interface'
 
-export function getServerStatus(): ResponseT {
+export function getServerStatusService(): IResponse {
   try {
     const uptimeSeconds = Math.floor(process.uptime())
 

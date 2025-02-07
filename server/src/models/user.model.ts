@@ -5,20 +5,24 @@ const userSchema = new Schema(
     id: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
     },
     img: {
-      type: String
-    }
+      type: String,
+    },
   },
   { timestamps: true }
 )

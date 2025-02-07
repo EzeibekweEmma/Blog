@@ -6,6 +6,7 @@ import Router from '@/routes'
 import ServerStatus from './routes/server-status.route'
 import config from '@/config'
 import connectDB from '@/lib/connectDB'
+import { handleErrorResponse, handleSuccessResponse } from './middleware'
 
 dotenv.config()
 
@@ -29,6 +30,9 @@ app.use((req, res, next) => {
     next()
   }
 })
+
+app.use(handleSuccessResponse)
+app.use(handleErrorResponse)
 
 app.use(ServerStatus)
 app.use('/api', Router)

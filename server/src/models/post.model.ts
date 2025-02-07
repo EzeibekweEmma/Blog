@@ -5,39 +5,39 @@ const postSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
     },
     img: {
-      type: String
+      type: String,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     slug: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     desc: {
-      type: String
+      type: String,
     },
     category: {
       type: String,
-      default: 'general'
+      default: 'general',
     },
     content: {
       type: String,
-      required: true
+      required: true,
     },
     isFeatured: {
       type: Boolean,
-      default: false
+      default: false,
     },
     visit: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   { timestamps: true }
 )
