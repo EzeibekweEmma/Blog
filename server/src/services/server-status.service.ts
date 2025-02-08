@@ -1,6 +1,6 @@
-import { IResponse } from '@/interface'
+import { Request, Response } from 'express'
 
-export function getServerStatusService(): IResponse {
+export function getServerStatusService(req: Request, res: Response) {
   try {
     const uptimeSeconds = Math.floor(process.uptime())
 
@@ -12,14 +12,12 @@ export function getServerStatusService(): IResponse {
 
     const uptimeString = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`
 
-    return {
-      status: 200,
+    res.status(200).json({
       data: { message: `Server is up and running - ${uptimeString}` },
-    }
+    })
   } catch (error) {
-    return {
-      status: 500,
+    res.status(500).json({
       data: { message: (error as Error).message },
-    }
+    })
   }
 }

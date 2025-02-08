@@ -1,8 +1,8 @@
-import { getServerStatusController } from '@/controllers'
+import { getServerStatusService } from '@/services'
 import express from 'express'
 
 const router = express.Router()
 
-router.get('/', getServerStatusController)
+router.get('/', getServerStatusService)
 
 export default router
