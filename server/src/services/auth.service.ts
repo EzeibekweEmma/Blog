@@ -1,37 +1,41 @@
-import { generateTokenAndSetCookie } from '@/middleware';
+import { generateTokenAndSetCookie } from '@/middleware'
 import User from '@/models/user.model'
 import bcryptjs from 'bcryptjs'
-import { Request, Response } from 'express';
+import { Request, Response } from 'express'
 
-export async function loginService(req: Request, res: Response) {
+export const loginService = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body
   try {
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email: email.toLowerCase().trim() })
     if (!user) {
-      return res
+      res
         .status(400)
         .json({ success: false, message: 'Incorrect email or password' })
+      return
     }
 
     const isPasswordValid = await bcryptjs.compare(password, user.password)
     if (!isPasswordValid) {
-      return res
+      res
         .status(400)
         .json({ success: false, message: 'Incorrect email or password' })
+      return
     }
 
-    generateTokenAndSetCookie(res, user.id)
+    generateTokenAndSetCookie(res, user._id.toString())
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: 'Logged in successfully',
     })
   } catch (error) {
-    return res.status(400).json({ success: false, message: (error as Error).message })
+    res
+      .status(400)
+      .json({ success: false, message: (error as Error).message })
   }
 }
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("token");
-  res.status(200).json({ success: true, message: "Logged out successfully" });
-};
+  res.clearCookie('token')
+  res.status(200).json({ success: true, message: 'Logged out successfully' })
+}

@@ -13,6 +13,7 @@ const app = {
   PORT: +(process.env.PORT || 3000),
   FE_BASE_URL: process.env.FE_BASE_URL || 'http://localhost:3000',
   JWT_SECRET: process.env.JWT_SECRET,
+  email: process.env.EMAIL,
   app_name: process.env.APP_NAME,
 }
 
