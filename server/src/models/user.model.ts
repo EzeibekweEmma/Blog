@@ -7,20 +7,20 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     img: {
-      type: String
-    }
+      type: String,
+    },
   },
   { timestamps: true }
 )

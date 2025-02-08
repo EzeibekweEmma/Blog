@@ -3,7 +3,10 @@ import User from '@/models/user.model'
 import bcryptjs from 'bcryptjs'
 import { Request, Response } from 'express'
 
-export const loginService = async (req: Request, res: Response): Promise<void> => {
+export const loginService = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { email, password } = req.body
   try {
     const user = await User.findOne({ email: email.toLowerCase().trim() })
@@ -29,13 +32,11 @@ export const loginService = async (req: Request, res: Response): Promise<void> =
       message: 'Logged in successfully',
     })
   } catch (error) {
-    res
-      .status(400)
-      .json({ success: false, message: (error as Error).message })
+    res.status(400).json({ success: false, message: (error as Error).message })
   }
 }
 
-export const logout = async (req: Request, res: Response) => {
+export const logoutService = async (req: Request, res: Response) => {
   res.clearCookie('token')
   res.status(200).json({ success: true, message: 'Logged out successfully' })
 }
