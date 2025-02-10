@@ -1,5 +1,7 @@
+import PageWrapper from '@/components/pageWrapper';
+
 const SingleBlogPage = () => {
-  return <h1>SingleBlogPage</h1>;
+  return <PageWrapper>SingleBlogPage</PageWrapper>;
 };
 
 export default SingleBlogPage;

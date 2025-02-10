@@ -1,17 +1,16 @@
-import express, { Express } from 'express'
-import dotenv from 'dotenv'
+import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import Router from '@/routes'
-import ServerStatus from './routes/server-status.route'
-import config from '@/config'
-import connectDB from '@/lib/connectDB'
-import User from '@/models/user.model' // Import User model
-import bcrypt from 'bcryptjs'
+import dotenv from 'dotenv';
+import authRouter from './routes/auth.route';
+import usersRouter from './routes/users.route';
+import config from './config';
+import { getServerStatusService } from './utils/server-status.service';
 
-dotenv.config()
+dotenv.config();
 
-const app: Express = express()
+const app = express();
 
 app.use(cors())
 app.use(
@@ -32,29 +31,16 @@ app.use((req, res, next) => {
   }
 })
 
-app.use(ServerStatus)
-app.use('/api', Router)
-
-const createAdminUser = async () => {
-  try {
-    const existingAdmin = await User.findOne({ email: config.app.email })
-    if (!existingAdmin) {
-      const hashedPassword = await bcrypt.hash('admin123', 10)
-      const adminUser = new User({
-        name: 'Admin',
-        email: config.app.email,
-        password: hashedPassword,
-      })
-      await adminUser.save()
-      console.log('Admin user created successfully')
-    }
-  } catch (error) {
-    console.error('Error creating admin user:', error)
-  }
-}
+// Routes setup
+app.get('/', getServerStatusService);
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
 
 app.listen(config.app.PORT, async () => {
-  await connectDB()
+  mongoose
+    .connect(config.db.url as string)
+    .then(() => console.log('MongoDB is Connected'))
+    .catch((err) => console.error(err));
+
   console.log(`Server is running at http://localhost:${config.app.PORT}`)
-  await createAdminUser()
 })
