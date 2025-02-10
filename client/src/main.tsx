@@ -4,7 +4,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Homepage from './routes/Homepage';
 import BlogListPage from './routes/BlogListPage';
-import Write from './routes/crateBlog';
+import CrateBlogPage from './routes/crateBlogPage';
 import LoginPage from './routes/LoginPage';
 import RegisterPage from './routes/RegisterPage';
 import SingleBlogPage from './routes/SingleBlogPage';
@@ -30,16 +30,16 @@ const router = createBrowserRouter([
         element: <BlogListPage />,
       },
       {
-        path: '/blogs/:slug',
-        element: <SingleBlogPage />,
-      },
-      {
-        path: '/saved',
+        path: '/blogs/saved',
         element: <div>Saved Blogs</div>,
       },
       {
-        path: '/write',
-        element: <Write />,
+        path: '/blogs/create',
+        element: <CrateBlogPage />,
+      },
+      {
+        path: '/blogs/:slug',
+        element: <SingleBlogPage />,
       },
       {
         path: '/login',
