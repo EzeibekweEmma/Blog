@@ -15,7 +15,8 @@ const app = express();
 
 app.use(cors(
   {
-    origin: config.app.FE_BASE_URL
+    origin: config.app.FE_BASE_URL,
+    credentials: true,
   }
 ))
 app.use(

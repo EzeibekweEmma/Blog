@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { MongoServerError } from 'mongodb';
 import { BlogPostValidation } from '@/utils/generalValidation';
 import { capitalize, generateUniqueSlug } from '@/utils/helper';
 import { ZodError } from 'zod';
@@ -27,6 +28,9 @@ router.post('/post', async (req: Request, res: Response): Promise<any> => {
   } catch (err) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.errors[0].message });
+    }
+    if ((err as MongoServerError).code === 11000) {
+      return res.status(409).json({ error: `Blog post with title: '${req.body.title}' already exists` });
     }
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });

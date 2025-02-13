@@ -8,6 +8,7 @@ import CrateBlogPage from './routes/crateBlogPage';
 import LoginPage from './routes/LoginPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
+import { ToastContainer } from 'react-toastify';
 
 // const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <ToastContainer />
     <RouterProvider router={router} />
   </StrictMode>
 );

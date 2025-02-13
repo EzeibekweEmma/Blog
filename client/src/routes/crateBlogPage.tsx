@@ -2,9 +2,9 @@ import { useState } from 'react';
 import PageWrapper from '../components/pageWrapper';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios, { AxiosError } from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-// import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const CrateBlogPage = () => {
   const [content, setContent] = useState('');
@@ -13,7 +13,7 @@ const CrateBlogPage = () => {
   const [image, setImage] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -46,24 +46,23 @@ const CrateBlogPage = () => {
     };
 
     try {
-      console.log(payload);
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/blogs/post`,
-        payload
+        payload,
+        { withCredentials: true }
       );
 
       if (response.status.toString().startsWith('2')) {
-        // return navigate(`/${response.data.slug}`);
-        console.log(response.data);
         toast.success(response.data.message);
+        return navigate(`/blogs/${response.data.slug}`);
       }
-
-      throw new Error('Failed to submit blog');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response && error.response.data) {
-        toast.error(error.response.data.error);
+        toast.error(error.response.data.error || 'Something went wrong!');
+      } else if (axios.isAxiosError(error)) {
+        toast.error(error.message);
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error('Something went wrong!');
       }
       console.error('Error submitting blog:', error);
     }
@@ -85,7 +84,6 @@ const CrateBlogPage = () => {
 
   return (
     <PageWrapper>
-      <ToastContainer />
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
         <h1 className="text-3xl font-bold text-[#2c586a] mb-6">
           Create Blog Post
