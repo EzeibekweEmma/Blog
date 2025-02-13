@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '@/models/user.model';
-import { LoginValidation } from '../utils/UserValidation';
+import { LoginValidation } from '../utils/generalValidation';
 import { ZodError } from 'zod';
 import { generateTokenAndSetCookie } from '@/utils/setCookie';
 
@@ -18,7 +18,7 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) return res.status(401).send('Incorrect email or password');
 
-    generateTokenAndSetCookie(res, user._id.toString());
+    generateTokenAndSetCookie(res, user._id.toString(), user.role);
 
     res.status(200).json({ "message": 'Logged in successfully' });
   } catch (err) {

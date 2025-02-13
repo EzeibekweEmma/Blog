@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv';
 import authRouter from './routes/auth.route';
 import usersRouter from './routes/users.route';
+import blogRouter from './routes/blog.route';
 import config from './config';
 import { getServerStatusService } from './utils/server-status.service';
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 app.get('/', getServerStatusService);
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/blogs', blogRouter);
 
 app.listen(config.app.PORT, async () => {
   mongoose

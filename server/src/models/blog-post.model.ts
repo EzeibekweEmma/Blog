@@ -1,13 +1,13 @@
 import mongoose, { Schema } from 'mongoose'
 
-const postSchema = new Schema(
+const blogPostSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
-    img: {
+    image: {
       type: String
     },
     title: {
@@ -19,12 +19,13 @@ const postSchema = new Schema(
       required: true,
       unique: true
     },
-    desc: {
-      type: String
+    description: {
+      type: String,
+      required: true
     },
     category: {
-      type: String,
-      default: 'general'
+      type: [String],
+      default: ['general']
     },
     content: {
       type: String,
@@ -34,15 +35,29 @@ const postSchema = new Schema(
       type: Boolean,
       default: false
     },
+    isPublished: {
+      type: Boolean,
+      default: false
+    },
     visit: {
       type: Number,
       default: 0
     },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
+    deletedAt: {
+      type: Date
+    },
     createdAt: {
       type: Date,
       default: Date.now
+    },
+    updatedAt: {
+      type: Date
     }
   }
 )
 
-export default mongoose.model('Post', postSchema)
+export default mongoose.model('BlogPost', blogPostSchema)

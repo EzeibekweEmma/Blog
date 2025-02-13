@@ -1,5 +1,8 @@
 import mongoose, { Schema } from 'mongoose'
 
+const date = new Date(Date.now())
+const year = date.getFullYear()
+
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -15,7 +18,12 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    default: `User@${year}`
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   },
   image: {
     type: String

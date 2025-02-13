@@ -4,8 +4,15 @@ import { Response } from 'express'
 import jwt from 'jsonwebtoken'
 
 
-export const generateTokenAndSetCookie = (res: Response, userId: string) => {
-  const token = jwt.sign({ userId, keyFunc: keyFunc.AUTH }, config.app.JWT_SECRET!, {
+/**
+ * Generate a JWT token and set it as a cookie
+ * @param res - Response object
+ * @param userId - User ID
+ * @param userRole - User role
+ * @returns void
+ */
+export const generateTokenAndSetCookie = (res: Response, userId: string, userRole: string) => {
+  const token = jwt.sign({ userId, userRole, keyFunc: keyFunc.AUTH }, config.app.JWT_SECRET!, {
     expiresIn: '7d',
   })
   res.cookie('token', token, {

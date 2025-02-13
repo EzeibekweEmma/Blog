@@ -44,3 +44,13 @@ export const EditValidation = z.object({
       path: ['confirmPassword']
     }
   )
+
+export const BlogPostValidation = z.object({
+  title: z.string().min(3, 'Title must be at least 3 character(s) long').max(100, 'Title should not exceed 100 character(s)'),
+  description: z.string().min(3, 'Description must be at least 3 character(s) long').max(200, 'Description should not exceed 200 character(s)'),
+  content: z.string().min(3, 'Content must be at least 3 character(s) long'),
+  image: z.string().url().optional().nullable(),
+  category: z.string().optional().nullable(),
+  isFeatured: z.boolean().optional().nullable(),
+  isPublished: z.boolean().optional().nullable()
+})

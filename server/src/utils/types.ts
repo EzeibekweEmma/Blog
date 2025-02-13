@@ -1,5 +1,6 @@
 export interface TokenPayload {
   userId: string
+  userRole: string
   keyFunc?: string
 }
 

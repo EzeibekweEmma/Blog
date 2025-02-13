@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import User from '@/models/user.model';
-import { EditValidation } from '@/utils/UserValidation';
-import { capitalize } from '@/utils/capitalize';
+import { EditValidation } from '@/utils/generalValidation';
+import { capitalize } from '@/utils/helper';
 import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
 import Authentication from '@/middleware';

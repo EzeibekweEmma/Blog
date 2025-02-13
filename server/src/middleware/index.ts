@@ -6,7 +6,8 @@ import { keyFunc, TokenPayload } from '@/utils/types';
 declare global {
   namespace Express {
     interface Request {
-      userId: string
+      userId: string;
+      userRole: string;
     }
   }
 }
@@ -26,7 +27,7 @@ const Authentication = (req: Request, res: Response, next: NextFunction): any =>
         .status(401)
         .json({ success: false, message: 'Unauthorized - invalid token' })
 
-    const { userId, keyFunc: func } = decoded as TokenPayload
+    const { userId, userRole, keyFunc: func } = decoded as TokenPayload
 
     if (func !== keyFunc.AUTH)
       return res
@@ -34,6 +35,7 @@ const Authentication = (req: Request, res: Response, next: NextFunction): any =>
         .json({ success: false, message: 'Unauthorized - invalid token' })
 
     req.userId = userId
+    req.userRole = userRole
     return next()
   } catch (error) {
     console.log('Error in verifyToken ', error)
