@@ -6,15 +6,14 @@ import Homepage from './routes/Homepage';
 import BlogListPage from './routes/BlogListPage';
 import CrateBlogPage from './routes/crateBlogPage';
 import LoginPage from './routes/LoginPage';
-import RegisterPage from './routes/RegisterPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!PUBLISHABLE_KEY) {
-  throw new Error('Missing Publishable Key');
-}
+// if (!PUBLISHABLE_KEY) {
+//   throw new Error('Missing Publishable Key');
+// }
 
 const router = createBrowserRouter([
   {

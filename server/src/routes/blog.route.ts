@@ -12,14 +12,15 @@ const router = express.Router();
  * @desc Create a new blog post
  * @access Private (Authenticated)
  */
-router.post('/post', Authentication, async (req: Request, res: Response): Promise<any> => {
+router.post('/post', async (req: Request, res: Response): Promise<any> => {
   try {
     const field = BlogPostValidation.parse(req.body);
     const newPost = await BlogPost.create({
       ...field,
       title: capitalize(field.title),
-      slug: generateUniqueSlug(field.title, true),
-      user: req.userId,
+      slug: generateUniqueSlug(field.title),
+      // user: req.userId,
+      user: "67a7c28f2f1db7141e619834",
     });
 
     res.status(201).json({ message: 'Blog post created successfully', slug: newPost.slug });
@@ -37,7 +38,7 @@ router.post('/post', Authentication, async (req: Request, res: Response): Promis
  * @desc Edit a blog post
  * @access Private (Authenticated)
  */
-router.put('/edit/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
+router.put('/edit/:slug', async (req: Request, res: Response): Promise<any> => {
   try {
     const field = BlogPostValidation.parse(req.body);
     field.title = capitalize(field.title);

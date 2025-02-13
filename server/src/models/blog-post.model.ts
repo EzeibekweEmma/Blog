@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
-const blogPostSchema = new Schema(
+const blogsSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -60,4 +60,4 @@ const blogPostSchema = new Schema(
   }
 )
 
-export default mongoose.model('BlogPost', blogPostSchema)
+export default mongoose.model('Blogs', blogsSchema)
