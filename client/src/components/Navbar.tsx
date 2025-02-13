@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const [open, isOpen] = useState(false);
@@ -9,7 +8,7 @@ const Navbar = () => {
   const navList = [
     { name: 'Home', path: '/' },
     { name: 'Blogs', path: '/blogs' },
-    { name: 'Saved Blogs', path: '/saved' },
+    { name: 'Saved Blogs', path: '/blogs/saved' },
   ];
 
   return (
@@ -66,11 +65,11 @@ const Navbar = () => {
                   {navItem.name}
                 </Link>
               ))}
-              <Link to="/login" onClick={() => isOpen(false)}>
+              {/* <Link to="/login" onClick={() => isOpen(false)}>
                 <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">
                   Login 👋
                 </button>
-              </Link>
+              </Link> */}
             </div>
           </div>
           {/* DESKTOP MENU */}
@@ -86,16 +85,11 @@ const Navbar = () => {
                 {navItem.name}
               </Link>
             ))}
-            <SignedOut>
-              <Link to="/login">
+            {/* <Link to="/login">
                 <button className="py-2 px-4 rounded-3xl hover:bg-[#2c586a] bg-[#f3f8f6] hover:text-[#f3f8f6] text-[#2c586a] border-[#f3f8f6] border-2">
                   Login 👋
                 </button>
-              </Link>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+              </Link> */}
           </div>
         </div>
       </div>

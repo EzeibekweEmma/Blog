@@ -50,7 +50,7 @@ export const BlogPostValidation = z.object({
   description: z.string().min(3, 'Description must be at least 3 character(s) long').max(200, 'Description should not exceed 200 character(s)'),
   content: z.string().min(3, 'Content must be at least 3 character(s) long'),
   image: z.string().url().optional().nullable(),
-  category: z.string().optional().nullable(),
+  category: z.array(z.string()).default(['general']),
   isFeatured: z.boolean().optional().nullable(),
   isPublished: z.boolean().optional().nullable()
 })

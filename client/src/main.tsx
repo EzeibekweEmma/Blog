@@ -9,7 +9,6 @@ import LoginPage from './routes/LoginPage';
 import RegisterPage from './routes/RegisterPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
-import { ClerkProvider } from '@clerk/clerk-react';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -46,10 +45,6 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path: '/register',
-        element: <RegisterPage />,
-      },
-      {
         path: '*',
         element: <div>404 Not Found</div>,
       },
@@ -59,8 +54,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <RouterProvider router={router} />
-    </ClerkProvider>
+    <RouterProvider router={router} />
   </StrictMode>
 );

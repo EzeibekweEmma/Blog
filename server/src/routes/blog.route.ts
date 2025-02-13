@@ -106,11 +106,11 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
 });
 
 /**
- * @route GET /all
+ * @route GET /
  * @desc Get all blog posts (excluding deleted)
  * @access Public
  */
-router.get('/all', async (req: Request, res: Response): Promise<any> => {
+router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
     const posts = await BlogPost.find({ isDeleted: false, isPublished: true }).sort({ createdAt: -1 });
     res.status(200).json({ posts });
@@ -143,11 +143,11 @@ router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
 });
 
 /**
- * @route GET /admin
+ * @route GET /all
  * @desc Get all blog posts
  * @access protected
  */
-router.get('/admin', Authentication, async (req: Request, res: Response): Promise<any> => {
+router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const posts = await BlogPost.find().sort({ createdAt: -1 });
     res.status(200).json({ posts });
@@ -158,11 +158,11 @@ router.get('/admin', Authentication, async (req: Request, res: Response): Promis
 })
 
 /**
- * @route GET /admin/:slug
+ * @route GET /all/:slug
  * @desc Get a single blog post
  * @access protected
  */
-router.get('/admin/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
+router.get('/all/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const post = await BlogPost.findOne({ slug: req.params.slug });
     if (!post) {
