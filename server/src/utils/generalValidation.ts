@@ -47,7 +47,7 @@ export const EditValidation = z.object({
 
 export const BlogPostValidation = z.object({
   title: z.string().min(3, 'Title must be at least 3 character(s) long').max(100, 'Title should not exceed 100 character(s)'),
-  description: z.string().min(3, 'Description must be at least 3 character(s) long').max(200, 'Description should not exceed 200 character(s)'),
+  description: z.string().min(3, 'Description must be at least 3 character(s) long').max(80, 'Description should not exceed 80 character(s)'),
   image: z.string().regex(
     /^data:image\/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=]+$/,
     'Invalid Base64 image format'

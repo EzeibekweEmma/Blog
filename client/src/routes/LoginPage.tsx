@@ -1,4 +1,4 @@
-import PageWrapper from '../components/pageWrapper';
+import PageWrapper from '../components/PageWrapper';
 
 const LoginPage = () => {
   return (
