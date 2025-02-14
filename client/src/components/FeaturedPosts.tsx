@@ -8,10 +8,10 @@ const FeaturedPosts = (props: { blog: IBlogPost[] }) => {
     blog.length > 0 && (
       <div className="mt-4 flex flex-col md:flex-row gap-4 w-full justify-between">
         <div className="flex-[0.8] md:flex hidden">
-          <BlogCard isFeatured blog={blog[12]} />
+          <BlogCard isFeatured blog={blog[5]} />
         </div>
         <div className="flex-1 md:hidden">
-          <BlogCard blog={blog[12]} />
+          <BlogCard blog={blog[5]} />
         </div>
         {blog.length > 1 && (
           <div className="flex-1 flex gap-4 flex-col justify-between">

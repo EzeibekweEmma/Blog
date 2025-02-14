@@ -24,7 +24,10 @@ router.post('/post', async (req: Request, res: Response): Promise<any> => {
       user: "67a7c28f2f1db7141e619834",
     });
 
-    res.status(201).json({ message: 'Blog post created successfully', slug: newPost.slug });
+    if (!newPost) {
+      return res.status(400).json({ error: 'Failed to create blog post' });
+    }
+    return res.status(201).json({ message: 'Blog post created successfully', slug: newPost.slug });
   } catch (err) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.errors[0].message });
@@ -32,8 +35,7 @@ router.post('/post', async (req: Request, res: Response): Promise<any> => {
     if ((err as MongoServerError).code === 11000) {
       return res.status(409).json({ error: `Blog post with title: '${req.body.title}' already exists` });
     }
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -51,14 +53,15 @@ router.put('/edit/:slug', async (req: Request, res: Response): Promise<any> => {
     if (!updatedPost) {
       return res.status(404).json({ error: 'Blog post not found' });
     }
-
-    res.status(200).json({ message: 'Blog post updated successfully', slug: updatedPost.slug });
+    return res.status(200).json({ message: 'Blog post updated successfully', slug: updatedPost.slug });
   } catch (err) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.errors[0].message });
     }
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    if ((err as MongoServerError).code === 11000) {
+      return res.status(409).json({ error: `Blog post with title: '${req.body.title}' already exists` });
+    }
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -79,10 +82,9 @@ router.delete('/delete/:slug', Authentication, async (req: Request, res: Respons
       return res.status(404).json({ error: 'Blog post not found' });
     }
 
-    res.status(200).json({ message: 'Blog post deleted successfully', post: deletedPost });
+    return res.status(200).json({ message: 'Blog post deleted successfully', post: deletedPost });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -103,10 +105,9 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
       return res.status(404).json({ error: 'Blog post not found' });
     }
 
-    res.status(200).json({ message: 'Blog post restored successfully', post: restoredPost });
+    return res.status(200).json({ message: 'Blog post restored successfully', post: restoredPost });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -117,11 +118,17 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
-    const posts = await BlogPost.find({ isDeleted: false, isPublished: true }).sort({ createdAt: -1 });
-    res.status(200).json({ posts });
+    const limit = req.query.limit ? parseInt(<string>req.query.limit) : 6
+    const page = req.query.page ? parseInt(<string>req.query.page) : 1
+    const skip = (page - 1) * limit
+
+    const posts = await BlogPost.find({ isDeleted: false, isPublished: true }).sort({ createdAt: -1 }).limit(limit).skip(skip);
+    if (!posts) {
+      return res.status(400).json({ error: 'Error fetching blog posts' });
+    }
+    return res.status(200).json({ posts });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -140,10 +147,9 @@ router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
     post.visit += 1;
     await post.save();
 
-    res.status(200).json({ post });
+    return res.status(200).json({ post });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -154,11 +160,19 @@ router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
  */
 router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const posts = await BlogPost.find().sort({ createdAt: -1 });
-    res.status(200).json({ posts });
+    const limit = req.query.limit ? parseInt(<string>req.query.limit) : 6
+    const page = req.query.page ? parseInt(<string>req.query.page) : 1
+    const skip = (page - 1) * limit
+    const sort = req.query.sort ? String(req.query.sort).toLowerCase() === "newest" ? -1 : 1 : -1
+
+    const posts = await BlogPost.find().sort({ createdAt: sort }).limit(limit).skip(skip);
+
+    if (!posts) {
+      return res.status(400).json({ error: 'Error fetching blog posts' });
+    }
+    return res.status(200).json({ posts });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 })
 
@@ -173,11 +187,9 @@ router.get('/all/:slug', Authentication, async (req: Request, res: Response): Pr
     if (!post) {
       return res.status(404).json({ error: 'Blog not found' });
     }
-
-    res.status(200).json({ post });
+    return res.status(200).json({ post });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 })
 
