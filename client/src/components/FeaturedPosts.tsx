@@ -1,24 +1,28 @@
+import { IBlogPost } from '../interface';
 import BlogCard from './BlogCard';
 
-const FeaturedPosts = () => {
-  const blogs = ['', '', ''];
+const FeaturedPosts = (props: { blog: IBlogPost[] }) => {
+  const { blog } = props;
 
   return (
-    blogs.length > 0 && (
+    blog.length > 0 && (
       <div className="mt-4 flex flex-col md:flex-row gap-4 w-full justify-between">
         <div className="flex-[0.8] md:flex hidden">
-          <BlogCard isFeatured />
+          <BlogCard isFeatured blog={blog[12]} />
         </div>
-        <div className="flex md:hidden">
-          <BlogCard />
+        <div className="flex-1 md:hidden">
+          <BlogCard blog={blog[12]} />
         </div>
-        {blogs.length > 1 && (
+        {blog.length > 1 && (
           <div className="flex-1 flex gap-4 flex-col justify-between">
-            {blogs.slice(1).map((blog, index) => (
-              <div key={index} className="">
-                <BlogCard />
-              </div>
-            ))}
+            {blog.slice(1).map((blog, index) => {
+              if (index < 2)
+                return (
+                  <div key={index} className="">
+                    <BlogCard blog={blog} />
+                  </div>
+                );
+            })}
           </div>
         )}
       </div>

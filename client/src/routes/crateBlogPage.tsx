@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../main';
 
 const CrateBlogPage = () => {
   const [content, setContent] = useState('');
@@ -46,11 +47,9 @@ const CrateBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/blogs/post`,
-        payload,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
+        withCredentials: true,
+      });
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
