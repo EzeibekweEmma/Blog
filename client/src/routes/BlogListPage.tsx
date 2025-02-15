@@ -59,7 +59,7 @@ const BlogListPage = () => {
 
   return (
     <PageWrapper>
-      <div className="my-8">
+      <div>
         <MainCategories />
         <span className="md:hidden">
           <Search />

@@ -40,20 +40,19 @@ const Homepage = () => {
     fetchBlogs();
   }, []);
 
-  console.log(blogs);
-
   return (
     <PageWrapper>
-      <div className="mt-4 mb-20 flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {/* INTRODUCTION */}
-        <div className="flex items-center justify-between my-5">
+        <div className="flex items-center justify-between md:mb-5">
           <div>
             <h1 className="text-[#2c586a] text-2xl md:text-5xl lg:text-6xl font-bold max-w-3xl">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             </h1>
             <p className="mt-8 text-md md:text-xl">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sequi
-              rerum accusantium.
+              rerum accusantium. Lorem ipsum dolor sit, amet consectetur
+              adipisicing elit. Sequi rerum accusantium.
             </p>
           </div>
           {/* animated button */}

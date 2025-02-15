@@ -1,29 +1,9 @@
 import { Link } from 'react-router-dom';
 import { IBlogPost } from '../interface';
+import { getDaysAgo } from '../utils';
 
 const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
   const { isFeatured, blog } = props;
-
-  const getDaysAgo = (createdAt: Date) => {
-    const createdDate = new Date(createdAt);
-    const now = new Date();
-    const differenceInTime = now.getTime() - createdDate.getTime();
-    const differenceInDays = Math.floor(
-      differenceInTime / (1000 * 60 * 60 * 24)
-    );
-
-    const res =
-      differenceInTime < 1000 * 60
-        ? 'Just now'
-        : differenceInTime < 1000 * 60 * 60
-        ? Math.floor(differenceInTime / (1000 * 60)) + ' minutes ago'
-        : differenceInDays < 1
-        ? Math.floor(differenceInTime / (1000 * 60 * 60)) + ' hours ago'
-        : differenceInDays > 1
-        ? 'A day ago'
-        : differenceInDays + ' days ago';
-    return res;
-  };
 
   return (
     <div
@@ -34,18 +14,16 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
       }`}
     >
       {/* image */}
-      <Link to={`/blogs/${blog.slug}`}>
+      <Link to={`/blogs/${blog.slug}`} className="sm:flex-[0.4]">
         <img
           src={blog.image}
           alt={blog.title}
-          className={`rounded-lg ${
-            isFeatured
-              ? 'object-cover object-center w-full h-52'
-              : 'h-52 sm:h-40 sm:w-48'
+          className={`object-cover object-center rounded-lg h-52 ${
+            isFeatured ? 'w-full' : 'sm:h-40 sm:w-48 w-full'
           }`}
         />
       </Link>
-      <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0'}>
+      <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0 sm:flex-1'}>
         <Link
           to={`/blogs/${blog.slug}`}
           className="text-lg font-semibold text-[#2c586a] hover:underline"
@@ -53,7 +31,11 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
           {blog.title}
         </Link>
         <p className="text-sm mt-3">
-          <span>{blog.description}</span>
+          <span>
+            {blog.description.length > 120
+              ? blog.description.slice(0, 120) + '...'
+              : blog.description}
+          </span>
           <Link
             to={`/blogs/${blog.slug}`}
             className="text-sm text-[#2c586a] hover:underline ml-2"

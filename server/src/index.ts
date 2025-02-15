@@ -24,18 +24,18 @@ app.use(
     limit: '50mb',
   })
 )
-app.use((req, res, next) => {
-  const excludedMethods = ['POST', 'PUT', 'PATCH']
+// app.use((req, res, next) => {
+//   const excludedMethods = ['POST', 'PUT', 'PATCH']
 
-  if (!excludedMethods.includes(req.method)) {
-    res.setTimeout(20000, () => {
-      res.status(408).json({ error: 'Request timed out' })
-    })
-    next()
-  } else {
-    next()
-  }
-})
+//   if (!excludedMethods.includes(req.method)) {
+//     res.setTimeout(20000, () => {
+//       res.status(408).json({ error: 'Request timed out' })
+//     })
+//     next()
+//   } else {
+//     next()
+//   }
+// })
 
 // Routes setup
 app.get('/', getServerStatusService);
