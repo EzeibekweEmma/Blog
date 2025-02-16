@@ -16,9 +16,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get(`${API_URL}/blogs`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(`${API_URL}/blogs`);
         if (response.status.toString().startsWith('2')) {
           setBlogs(response.data.posts);
         }

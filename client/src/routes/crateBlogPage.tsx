@@ -50,9 +50,7 @@ const CreateBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
-        withCredentials: true,
-      });
+      const response = await axios.post(`${API_URL}/blogs/post`, payload);
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);

@@ -4,7 +4,7 @@ import Search from './Search';
 
 const Aside = () => {
   return (
-    <aside className="flex-[0.35] w-full md:block hidden">
+    <aside className="flex-[0.35] md:block hidden">
       <Search />
       <div>
         <h2 className="text-xl font-medium border-b border-[#2c586a] text-[#2c586a] mt-5">

@@ -16,9 +16,7 @@ const SingleBlogView = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axios.get(`${API_URL}/blogs/${slug}`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(`${API_URL}/blogs/${slug}`);
         if (response.status.toString().startsWith('2')) {
           setBlog(response.data.blog);
         }

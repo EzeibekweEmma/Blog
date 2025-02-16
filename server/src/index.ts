@@ -8,11 +8,15 @@ import usersRouter from './routes/users.route';
 import blogRouter from './routes/blog.route';
 import config from './config';
 import { getServerStatusService } from './utils/server-status.service';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
 const app = express();
 
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors(
   {
     origin: config.app.FE_BASE_URL,

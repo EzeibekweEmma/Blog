@@ -4,6 +4,7 @@ import User from '@/models/user.model';
 import { LoginValidation } from '../utils/generalValidation';
 import { ZodError } from 'zod';
 import { generateTokenAndSetCookie } from '@/utils/setCookie';
+import Authentication from '@/middleware';
 
 const router = express.Router();
 
@@ -36,6 +37,10 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 router.post('/logout', async (req: Request, res: Response) => {
   res.clearCookie('token');
   res.status(200).json({ "message": 'Logged out successfully' });
+});
+
+router.get('/verify', Authentication, async (req: Request, res: Response) => {
+  res.status(200).json({ "success": true });
 });
 
 export default router;

@@ -9,12 +9,15 @@ import LoginPage from './routes/LoginPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
 import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) {
   throw new Error('Missing Publishable Key');
 }
+
+axios.defaults.withCredentials = true;
 
 const router = createBrowserRouter([
   {
