@@ -21,7 +21,7 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 
     generateTokenAndSetCookie(res, user._id.toString(), user.role);
 
-    res.status(200).json({ "message": 'Logged in successfully' });
+    res.status(200).json({ "message": 'Logged in successfully', "success": true, "userId": req.userId, "userRole": req.userRole });
   } catch (err) {
     if (err instanceof ZodError) {
       console.error('Validation error:', err.errors);
@@ -36,11 +36,12 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
 
 router.post('/logout', async (req: Request, res: Response) => {
   res.clearCookie('token');
+  res.clearCookie('userDetails');
   res.status(200).json({ "message": 'Logged out successfully' });
 });
 
 router.get('/verify', Authentication, async (req: Request, res: Response) => {
-  res.status(200).json({ "success": true });
+  res.status(200).json({ "success": true, "userId": req.userId, "userRole": req.userRole });
 });
 
 export default router;

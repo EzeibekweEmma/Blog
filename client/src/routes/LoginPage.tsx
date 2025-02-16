@@ -4,6 +4,7 @@ import PageWrapper from '../components/PageWrapper';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../main';
+import Cookies from 'js-cookie';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ const LoginPage = () => {
       const response = await axios.post(`${API_URL}/auth/login`, payload);
 
       if (response.status.toString().startsWith('2')) {
+        Cookies.set('userDetails', JSON.stringify(response.data));
         toast.success(response.data.message);
         navigate('/blogs');
       }
@@ -44,7 +46,9 @@ const LoginPage = () => {
     <PageWrapper>
       <div className="flex justify-center items-center h-[50vh]">
         <div className="w-full sm:w-[400px] p-5 rounded-lg shadow-lg">
-          <h1 className="text-3xl font-bold text-[#2c586a] mb-5">Login</h1>
+          <h1 className="text-3xl font-bold text-[#2c586a] mb-10 text-center">
+            Login
+          </h1>
           <form onSubmit={handleLogin}>
             <div className="mb-5">
               <label htmlFor="email" className="text-[#2c586a] font-medium">
@@ -55,7 +59,7 @@ const LoginPage = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 border-2 border-[#2c586a] rounded-lg"
+                className="w-full mt-1 p-2 border-2 rounded-lg outline-none"
                 required
               />
             </div>
@@ -68,14 +72,14 @@ const LoginPage = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border-2 border-[#2c586a] rounded-lg"
+                className="w-full mt-1 p-2 border-2 rounded-lg outline-none"
                 required
               />
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-2 bg-[#2c586a] text-[#f3f8f6] font-medium rounded-lg ${
+              className={`w-full py-2 bg-[#2c586a] text-[#f3f8f6] font-medium rounded-lg mt-5 ${
                 isSubmitting
                   ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-[#1e4050]'
