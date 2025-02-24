@@ -32,8 +32,8 @@ const router = createBrowserRouter([
         element: <BlogListPage />,
       },
       {
-        path: '/blogs/saved',
-        element: <div>Saved Blogs</div>,
+        path: '/news',
+        element: <div>news</div>,
       },
       {
         path: '/blogs/create',

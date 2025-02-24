@@ -13,15 +13,14 @@ const router = express.Router();
  * @desc Create a new blog post
  * @access Private (Authenticated)
  */
-router.post('/post', async (req: Request, res: Response): Promise<any> => {
+router.post('/post', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const field = BlogPostValidation.parse(req.body);
     const newPost = await BlogPost.create({
       ...field,
       title: capitalize(field.title),
       slug: generateUniqueSlug(field.title),
-      // user: req.userId,
-      user: "67a7c28f2f1db7141e619834",
+      user: req.userId,
     });
 
     if (!newPost) {
@@ -44,7 +43,7 @@ router.post('/post', async (req: Request, res: Response): Promise<any> => {
  * @desc Edit a blog
  * @access Private (Authenticated)
  */
-router.put('/edit/:slug', async (req: Request, res: Response): Promise<any> => {
+router.put('/edit/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const field = BlogPostValidation.parse(req.body);
     field.title = capitalize(field.title);
@@ -124,10 +123,12 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
     page = isNaN(page) ? 1 : page
     const skip = (page - 1) * limit
 
-    const posts = await BlogPost.find({ isDeleted: false, isPublished: true }).sort({ createdAt: -1 }).limit(limit).skip(skip);
+    const posts = await BlogPost.find({ isDeleted: false, isPublished: true })
+      .sort({ createdAt: -1 }).limit(limit).skip(skip).select('_id title description image slug createdAt isFeatured');
     if (!posts) {
       return res.status(400).json({ error: 'Error fetching blog posts' });
     }
+
     return res.status(200).json({ posts, limit: limit, page: page });
   } catch (err) {
     console.error(err)

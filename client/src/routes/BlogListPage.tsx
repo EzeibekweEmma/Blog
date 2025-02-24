@@ -12,7 +12,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 const BlogListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState(() => {
+    return JSON.parse(localStorage.getItem('blogs') || '[]');
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
 
@@ -35,7 +37,15 @@ const BlogListPage = () => {
       if (response.status.toString().startsWith('2')) {
         const newBlogs = response.data.posts;
 
-        setBlogs((prevBlogs) => [...prevBlogs, ...newBlogs]);
+        setBlogs((prevBlogs) => {
+          const updatedBlogs = [...prevBlogs, ...newBlogs];
+
+          // Save updated blogs to localStorage
+          localStorage.setItem('blogs', JSON.stringify(updatedBlogs));
+
+          return updatedBlogs;
+        });
+
         setHasMore(newBlogs.length >= limit);
 
         // Update URL params
