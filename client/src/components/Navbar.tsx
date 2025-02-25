@@ -1,23 +1,37 @@
 import Cookies from 'js-cookie'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { API_URL } from '../main'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { RiWalkLine } from 'react-icons/ri'
+import { FaBloggerB, FaHome, FaNewspaper } from 'react-icons/fa'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
+  const authRoutes = ['/blogs/create', '/news/create', '/blogs/:slug/edit']
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null
 
+  useEffect(() => {
+    if (location.pathname === '/wisdom/2025/login' && userState) {
+      navigate('/')
+    } else if (
+      !userState &&
+      authRoutes.includes(location.pathname.toLowerCase())
+    ) {
+      navigate('/')
+    }
+  }, [userState, location.pathname, navigate])
+
   const navList = [
-    { name: 'Home', path: '/' },
-    { name: 'Blogs', path: '/blogs' },
-    { name: 'News', path: '/news' }
+    { name: 'Home', path: '/', icon: <FaHome /> },
+    { name: 'Blogs', path: '/blogs', icon: <FaBloggerB /> },
+    { name: 'News', path: '/news', icon: <FaNewspaper /> }
   ];
 
   const handleLogout = async () => {
@@ -36,12 +50,14 @@ const Navbar = () => {
   }
 
   return (
-    <nav className='flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50'>
+    <nav className='flex justify-center bg-[#2c586a] text-[#f3f8f6]'>
       <div className='w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]'>
         <div className='w-full h-16 md:h-20 flex items-center justify-between'>
           {/* LOGO */}
-          <Link to='/' className='flex items-center gap-1 text-2xl font-bold'>
-            <img src='logo.png' alt='Logo' className='h-12 w-12' />
+          <Link
+            to='/'
+            className='flex items-center gap-1 sm:text-2xl font-bold'
+          >
             <span>Empire Report</span>
           </Link>
           {/* MOBILE MENU */}
@@ -73,7 +89,7 @@ const Navbar = () => {
             </div>
             {/* MOBILE LINK LIST */}
             <div
-              className={`w-full h-screen bg-[#2c586a] flex flex-col items-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out pt-20 ${
+              className={`w-full h-screen bg-[#2c586a] flex flex-col items-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out pt-20 z-50 ${
                 isOpen ? '-right-0' : '-right-[100%]'
               }`}
             >
@@ -82,19 +98,21 @@ const Navbar = () => {
                   to={navItem.path}
                   key={index}
                   onClick={() => setIsOpen(false)}
-                  className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out ${
+                  className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out flex gap-1 items-center ${
                     location.pathname === navItem.path && 'border-b-2'
                   }`}
                 >
-                  {navItem.name}
+                  {navItem.icon}
+                  <span>{navItem.name}</span>
                 </Link>
               ))}
               {userState && (
                 <button
                   onClick={() => handleLogout()}
-                  className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2'
+                  className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 items-center flex gap-1'
                 >
-                  Logout
+                  <span>Logout</span>
+                  <RiWalkLine />
                 </button>
               )}
             </div>
@@ -105,19 +123,21 @@ const Navbar = () => {
               <Link
                 to={navItem.path}
                 key={index}
-                className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out ${
+                className={`border-[#f3f8f6] hover:border-b-2 transition-all ease-in-out flex gap-1 items-center ${
                   location.pathname === navItem.path && 'border-b-2'
                 }`}
               >
-                {navItem.name}
+                {navItem.icon}
+                <span>{navItem.name}</span>
               </Link>
             ))}
             {userState && (
               <button
                 onClick={() => handleLogout()}
-                className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2'
+                className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 flex gap-1 items-center'
               >
-                Logout
+                <span>Logout</span>
+                <RiWalkLine />
               </button>
             )}
           </div>

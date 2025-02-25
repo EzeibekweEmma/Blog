@@ -29,12 +29,12 @@ const WhatWeOffer = () => {
   ]
 
   return (
-    <section className='py-16 bg-gray-50'>
+    <section className='py-8 bg-gray-50 my-16 shadow-lg'>
       <div className='max-w-6xl mx-auto px-6'>
-        <h2 className='text-3xl md:text-4xl font-bold text-[#2c586a] text-center'>
+        <h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-[#2c586a] text-center'>
           What We Offer
         </h2>
-        <p className='text-lg text-gray-600 text-center mt-4 max-w-3xl mx-auto'>
+        <p className='sm:text-lg text-gray-600 text-center mt-4 max-w-3xl mx-auto'>
           Join us on this exciting journey as we bridge the gap between
           adventure and awareness.
         </p>
@@ -46,16 +46,18 @@ const WhatWeOffer = () => {
               className='bg-white p-6 rounded-lg shadow-lg text-center flex flex-col items-center hover:ease-in-out transform hover:-translate-y-1 hover:scale-105'
             >
               {offer.icon}
-              <h3 className='text-xl font-semibold text-[#2c586a] mt-4'>
+              <h3 className='sm:text-xl font-semibold text-[#2c586a] mt-4'>
                 {offer.title}
               </h3>
-              <p className='text-gray-600 mt-2'>{offer.description}</p>
+              <p className='text-gray-600 mt-2 text-sm sm:text-base'>
+                {offer.description}
+              </p>
             </div>
           ))}
         </div>
 
         <div className='text-center mt-12'>
-          <button className='bg-[#2c586a] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[#234956] transition duration-300'>
+          <button className='sm:text-lg bg-[#2c586a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#234956] transition duration-300'>
             Start Exploring. Stay Informed.
           </button>
         </div>

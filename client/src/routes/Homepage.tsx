@@ -1,6 +1,4 @@
 import PageWrapper from '../components/PageWrapper'
-import BlogCard from '../components/BlogCard'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { API_URL } from '../main'
@@ -17,20 +15,20 @@ const Homepage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        //   const response = await axios.get(`${API_URL}/blogs`);
-        //   if (response.status.toString().startsWith('2')) {
-        //     setBlogs(response.data.posts);
-        //   }
-        // } catch (error) {
-        //   if (
-        //     axios.isAxiosError(error) &&
-        //     error.response &&
-        //     error.response.data
-        //   ) {
-        //     toast.error(error.response.data.error);
-        //   }
-        //   toast.error('Something went wrong!');
-        //   console.error(error);
+        const response = await axios.get(`${API_URL}/blogs`)
+        if (response.status.toString().startsWith('2')) {
+          setBlogs(response.data.posts)
+        }
+      } catch (error) {
+        if (
+          axios.isAxiosError(error) &&
+          error.response &&
+          error.response.data
+        ) {
+          toast.error(error.response.data.error)
+        }
+        toast.error('Something went wrong!')
+        console.error(error)
       } finally {
         setIsLoading(false)
       }
@@ -51,7 +49,7 @@ const Homepage = () => {
             >
               Welcome To Empire Report Where Adventure Meets Awareness.
             </h1>
-            <p className='mt-10 text-md md:text-xl max-w-4xl'>
+            <p className='mt-5 sm:mt-10 text-sm sm:text-base md:text-xl max-w-4xl'>
               At Empire Report, we bring you the best of both worlds—captivating
               travel experiences and the latest global news. Whether you're an
               avid traveler, a digital nomad, or simply curious about the world,

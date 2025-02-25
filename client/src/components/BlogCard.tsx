@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import { IBlogPost } from '../interface';
 import { getDaysAgo } from '../utils';
 import {
-  IoBookmark,
-  IoBookmarkOutline,
   IoHeartOutline,
   IoHeartSharp,
   IoTrashBinOutline,
@@ -74,14 +72,14 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
           )}
         </div>
       )}
-      <div className="absolute bottom-5 right-5 flex gap-1.5">
+      {/* <div className="absolute bottom-5 right-5 flex gap-1.5">
         <button>
           <IoBookmark className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
         </button>
         <button>
           <IoBookmarkOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
         </button>
-      </div>
+      </div> */}
       {/* image */}
       <Link to={`/blogs/${blog.slug}`} className="sm:flex-[0.4]">
         <img
