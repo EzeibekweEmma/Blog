@@ -28,7 +28,7 @@ export const getDaysAgo = (createdAt: Date) => {
         ? Math.floor(differenceInTime / (1000 * 60)) + ' minutes ago'
         : differenceInDays < 1
           ? Math.floor(differenceInTime / (1000 * 60 * 60)) + ' hours ago'
-          : differenceInDays > 1
+          : differenceInDays === 1
             ? 'A day ago'
             : differenceInDays + ' days ago';
   return res;
