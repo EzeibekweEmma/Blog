@@ -15,7 +15,7 @@ import 'react-quill/dist/quill.snow.css';
 export const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) {
-  throw new Error('Missing Publishable Key');
+  throw new Error('Missing API URL');
 }
 
 axios.defaults.withCredentials = true;
