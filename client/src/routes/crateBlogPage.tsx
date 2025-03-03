@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import PageWrapper from '../components/PageWrapper';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +15,7 @@ const CreateBlogPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-
+  console.log(content);
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -26,6 +25,10 @@ const CreateBlogPage = () => {
     reader.onloadend = () => {
       setImage(reader.result);
     };
+  };
+
+  const handleContent = (e) => {
+    setContent(e);
   };
 
   const handleCategoryChange = (event) => {
@@ -50,7 +53,9 @@ const CreateBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(`${API_URL}/blogs/post`, payload);
+      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
+        withCredentials: true,
+      });
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
@@ -70,15 +75,14 @@ const CreateBlogPage = () => {
 
   const modules = {
     toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote', 'image'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { align: [] },
-        { color: [] },
-        { background: [] },
-      ],
+      [{ header: '1' }, { header: '2' }, { font: [] }],
+      [{ size: [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image', 'code-block'],
+      [{ align: [] }],
+      [{ color: [] }, { background: [] }],
+      ['clean'],
     ],
   };
 
@@ -192,8 +196,9 @@ const CreateBlogPage = () => {
         <div className="relative mb-4">
           <div className="quill-toolbar">
             <ReactQuill
+              placeholder="Write your story..."
               value={content}
-              onChange={setContent}
+              onChange={handleContent}
               modules={modules}
               className="quill-editor"
             />
