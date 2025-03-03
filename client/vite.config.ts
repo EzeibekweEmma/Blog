@@ -4,8 +4,6 @@ import postcss from './postcss.config.ts'
 
 export default defineConfig({
   plugins: [react()],
-  css: {
-    postcss
-  },
-  base: '/client/',
+  css: { postcss },
+  base: '/'
 })
