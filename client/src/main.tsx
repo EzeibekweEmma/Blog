@@ -23,6 +23,12 @@ axios.defaults.withCredentials = true;
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
+    errorElement: (
+      <div className="flex flex-col items-center justify-center h-full space-y-4">
+        <h1>Something went wrong.</h1>
+        <p>Please refresh the page or contact support.</p>
+      </div>
+    ),
     children: [
       {
         path: '/',

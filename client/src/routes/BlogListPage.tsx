@@ -32,7 +32,7 @@ const BlogListPage = () => {
       );
 
       if (response.status.toString().startsWith('2')) {
-        const newBlogs = response.data.posts;
+        const newBlogs = response.data.posts || [];
         setBlogs((prevBlogs) => [...prevBlogs, ...newBlogs]);
         setHasMore(response.data.hasMore);
 
