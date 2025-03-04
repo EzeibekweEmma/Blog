@@ -9,7 +9,6 @@ if (process.env.NODE_ENV === 'test') {
 
 const app = {
   environment: process.env.NODE_ENV,
-  HOST: process.env.HOST || 'localhost',
   PORT: +(process.env.PORT || 3000),
   FE_BASE_URL: process.env.FE_BASE_URL || 'http://localhost:3000',
   JWT_SECRET: process.env.JWT_SECRET,

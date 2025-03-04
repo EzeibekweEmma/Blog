@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "noEmit": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./",
@@ -16,6 +17,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/global.d.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
