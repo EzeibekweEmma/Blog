@@ -5,8 +5,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
-import DOMPurify from 'dompurify';
-import 'react-quill/dist/quill.snow.css';
 
 const CreateBlogPage = () => {
   const [content, setContent] = useState('');
@@ -18,16 +16,6 @@ const CreateBlogPage = () => {
   const quillRef = useRef(null);
 
   const navigate = useNavigate();
-  // const handleImageUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file) return;
-
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onloadend = () => {
-  //     setImage(reader.result);
-  //   };
-  // };
 
   const handleContent = (e) => {
     setContent(e);
@@ -47,22 +35,23 @@ const CreateBlogPage = () => {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://localhost:5000/upload', {
-          method: 'POST',
-          body: formData,
+        const response = await axios.post(`${API_URL}/media`, formData, {
+          withCredentials: true,
         });
 
-        const data = await response.json();
-        if (!data.url) throw new Error('Upload failed');
+        if (response.status.toString().startsWith('2')) {
+          const data = response.data;
+          if (!data.url) throw new Error('Upload failed');
 
-        // Insert image/video into Quill
-        const quill = quillRef.current.getEditor();
-        const range = quill.getSelection();
-        quill.insertEmbed(
-          range.index,
-          file.type.startsWith('video') ? 'video' : 'image',
-          data.url
-        );
+          // Insert image/video into Quill
+          const quill = quillRef.current?.getEditor();
+          const range = quill.getSelection();
+          quill.insertEmbed(
+            range.index,
+            file.type.startsWith('video') ? 'video' : 'image',
+            data.url
+          );
+        }
       } catch (err) {
         console.error('Upload error:', err);
       }
@@ -78,7 +67,7 @@ const CreateBlogPage = () => {
     }
   };
 
-  const handleSubmit = async (isPublished) => {
+  const handleSubmit = async (isPublished: boolean) => {
     setIsSubmitting(true);
 
     const payload = {
@@ -91,13 +80,13 @@ const CreateBlogPage = () => {
     };
 
     try {
-      // const response = await axios.post(`${API_URL}/blogs/post`, payload, {
-      //   withCredentials: true,
-      // });
-      // if (response.status.toString().startsWith('2')) {
-      //   toast.success(response.data.message);
-      //   return navigate(`/blogs/${response.data.slug}`);
-      // }
+      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
+        withCredentials: true,
+      });
+      if (response.status.toString().startsWith('2')) {
+        toast.success(response.data.message);
+        return navigate(`/blogs/${response.data.slug}`);
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
         toast.error(error.response.data.error || 'Something went wrong!');
@@ -126,8 +115,6 @@ const CreateBlogPage = () => {
       },
     },
   };
-
-  const sanitizedContent = DOMPurify.sanitize(content);
 
   return (
     <PageWrapper>
