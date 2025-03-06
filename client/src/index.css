@@ -12,13 +12,17 @@ body {
 .ql-toolbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1;
   border-bottom: 1px solid #ddd;
   background: #f3f8f6; 
   display: flex;
   flex-wrap: wrap;
   padding: 17px 8px !important;
   align-items: center;
+}
+
+.ql-toolbar button {
+  margin: 3px;
 }
 
 .ql-container {
@@ -28,15 +32,62 @@ body {
   overflow-y: auto;
 }
 
+.ql-editor {
+  padding: 10px;
+  font-size: 1.2em;
+  line-height: 1.5;
+  color: #333;
+  min-height: 20vh;
+}
+
 .ql-align-center {
   text-align: center;
 }
 .ql-align-right {
   text-align: right;
 }
-.ql-size-large {
-  font-size: 1.5em;
+.ql-align-left {
+  text-align: left;
 }
-.ql-size-small {
-  font-size: 0.75em;
+.ql-align-justify {
+  text-align: justify;
+}
+
+.prose-lg{
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.prose-lg *{
+  margin: 2px 0;
+}
+
+.prose-lg h1 {
+  font-size: 2.3em;
+  font-weight: 700;
+  margin: 0.5em 0;
+}
+
+.prose-lg h2 {
+  font-size: 2em;
+  font-weight: 600;
+  margin: 0.4em 0;
+}
+
+.prose-lg h3 {
+  font-size: 1.7em;
+  font-weight: 500;
+  margin: 0.3em 0;
+}
+
+.prose-lg blockquote{
+  background: #62767e16;
+  border-left: 5px solid #62767e;
+  padding: 10px;
+}
+
+.prose-lg a {
+  color: #2c586a;
+  text-decoration: underline;
 }

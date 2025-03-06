@@ -117,9 +117,9 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
-    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 6
+    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 12
     let page = req.query.page ? parseInt(<string>req.query.page) : 1
-    limit = isNaN(limit) ? 6 : limit
+    limit = isNaN(limit) ? 12 : limit
     page = isNaN(page) ? 1 : page
     const skip = (page - 1) * limit
 
@@ -129,7 +129,10 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
       return res.status(400).json({ error: 'Error fetching blog posts' });
     }
 
-    return res.status(200).json({ posts, limit: limit, page: page });
+    const totalPosts = await BlogPost.countDocuments({ isDeleted: false, isPublished: true });
+    const hasMore = totalPosts > skip + posts.length;
+    console.log(hasMore)
+    return res.status(200).json({ posts, limit: limit, page: page, hasMore });
   } catch (err) {
     console.error(err)
     return res.status(500).json({ error: 'Internal Server Error' });

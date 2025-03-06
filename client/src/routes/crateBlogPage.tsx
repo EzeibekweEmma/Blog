@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import PageWrapper from '../components/PageWrapper';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
+import DOMPurify from 'dompurify';
+import 'react-quill/dist/quill.snow.css';
 
 const CreateBlogPage = () => {
   const [content, setContent] = useState('');
@@ -13,23 +15,59 @@ const CreateBlogPage = () => {
   const [image, setImage] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState(['general']);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const quillRef = useRef(null);
 
   const navigate = useNavigate();
-  console.log(content);
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // const handleImageUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-  };
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onloadend = () => {
+  //     setImage(reader.result);
+  //   };
+  // };
 
   const handleContent = (e) => {
     setContent(e);
   };
+
+  const handleImageUpload = useCallback(() => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*,video/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+        if (!data.url) throw new Error('Upload failed');
+
+        // Insert image/video into Quill
+        const quill = quillRef.current.getEditor();
+        const range = quill.getSelection();
+        quill.insertEmbed(
+          range.index,
+          file.type.startsWith('video') ? 'video' : 'image',
+          data.url
+        );
+      } catch (err) {
+        console.error('Upload error:', err);
+      }
+    };
+  }, []);
 
   const handleCategoryChange = (event) => {
     const { value, checked } = event.target;
@@ -53,14 +91,13 @@ const CreateBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
-        withCredentials: true,
-      });
-
-      if (response.status.toString().startsWith('2')) {
-        toast.success(response.data.message);
-        return navigate(`/blogs/${response.data.slug}`);
-      }
+      // const response = await axios.post(`${API_URL}/blogs/post`, payload, {
+      //   withCredentials: true,
+      // });
+      // if (response.status.toString().startsWith('2')) {
+      //   toast.success(response.data.message);
+      //   return navigate(`/blogs/${response.data.slug}`);
+      // }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
         toast.error(error.response.data.error || 'Something went wrong!');
@@ -74,17 +111,23 @@ const CreateBlogPage = () => {
   };
 
   const modules = {
-    toolbar: [
-      [{ header: '1' }, { header: '2' }, { font: [] }],
-      [{ size: [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image', 'code-block'],
-      [{ align: [] }],
-      [{ color: [] }, { background: [] }],
-      ['clean'],
-    ],
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ color: [] }, { background: [] }],
+        [{ align: [] }],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'image', 'video'],
+      ],
+      handlers: {
+        image: handleImageUpload,
+        video: handleImageUpload,
+      },
+    },
   };
+
+  const sanitizedContent = DOMPurify.sanitize(content);
 
   return (
     <PageWrapper>
@@ -196,11 +239,13 @@ const CreateBlogPage = () => {
         <div className="relative mb-4">
           <div className="quill-toolbar">
             <ReactQuill
+              ref={quillRef}
               placeholder="Write your story..."
               value={content}
               onChange={handleContent}
               modules={modules}
               className="quill-editor"
+              theme="snow"
             />
           </div>
         </div>
