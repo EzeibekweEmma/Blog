@@ -35,14 +35,14 @@ const CreateBlogPage = () => {
       formData.append('file', file);
 
       try {
-        const response = await axios.post(`${API_URL}/media`, formData, {
+        const response = await axios.post(`${API_URL}/media-upload`, formData, {
           withCredentials: true,
         });
 
         if (response.status.toString().startsWith('2')) {
           const data = response.data;
           if (!data.url) throw new Error('Upload failed');
-
+          console.log('Uploaded file:', data.url);
           // Insert image/video into Quill
           const quill = quillRef.current?.getEditor();
           const range = quill.getSelection();
