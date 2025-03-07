@@ -21,6 +21,12 @@ const db = {
   database: dbName,
 }
 
+const cloudinary = {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+}
+
 const validateConfigDetails = (
   configName: string,
   obj: Record<string, any>
@@ -43,9 +49,10 @@ const validateConfigDetails = (
 try {
   validateConfigDetails('app', app)
   validateConfigDetails('db', db)
+  validateConfigDetails('cloudinary', cloudinary)
 } catch (error) {
   console.error((error as Error).message)
   process.exit(1)
 }
 
-export default { app, db }
+export default { app, db, cloudinary }
