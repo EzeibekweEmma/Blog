@@ -4,6 +4,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 import { fileSchema } from '@/utils/generalValidation';
 import { ZodError } from 'zod';
+import Authentication from '@/middleware';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single('file'), async (req: Request, res: Response): Promise<any> => {
+router.post("/", Authentication, upload.single('file'), async (req: Request, res: Response): Promise<any> => {
   try {
     const { path, mimetype } = fileSchema.parse(req.file);
 

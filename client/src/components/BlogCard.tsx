@@ -21,12 +21,8 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
   const handleDelete = async (option: boolean) => {
     try {
       const response = option
-        ? await axios.delete(`${API_URL}/blogs/delete/${blog.slug}`, {
-            withCredentials: true,
-          })
-        : await axios.patch(`${API_URL}/blogs/restore/${blog.slug}`, {
-            withCredentials: true,
-          });
+        ? await axios.delete(`${API_URL}/blogs/delete/${blog.slug}`)
+        : await axios.patch(`${API_URL}/blogs/restore/${blog.slug}`);
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);

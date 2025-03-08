@@ -35,14 +35,11 @@ const CreateBlogPage = () => {
       formData.append('file', file);
 
       try {
-        const response = await axios.post(`${API_URL}/media-upload`, formData, {
-          withCredentials: true,
-        });
+        const response = await axios.post(`${API_URL}/media-upload`, formData);
 
         if (response.status.toString().startsWith('2')) {
           const data = response.data;
           if (!data.url) throw new Error('Upload failed');
-          console.log('Uploaded file:', data.url);
           // Insert image/video into Quill
           const quill = quillRef.current?.getEditor();
           const range = quill.getSelection();
@@ -57,6 +54,25 @@ const CreateBlogPage = () => {
       }
     };
   }, []);
+
+  const handleCoverImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await axios.post(`${API_URL}/media-upload`, formData);
+        if (response.status.toString().startsWith('2')) {
+          const data = response.data;
+          if (!data.url) throw new Error('Upload failed');
+          setImage(data.url);
+        }
+      } catch (err) {
+        console.error('Cover image upload error:', err);
+        toast.error('Cover image upload failed');
+      }
+    }
+  };
 
   const handleCategoryChange = (event) => {
     const { value, checked } = event.target;
@@ -80,9 +96,7 @@ const CreateBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(`${API_URL}/blogs/post`, payload, {
-        withCredentials: true,
-      });
+      const response = await axios.post(`${API_URL}/blogs/post`, payload);
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
         return navigate(`/blogs/${response.data.slug}`);
@@ -179,7 +193,7 @@ const CreateBlogPage = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleImageUpload}
+                onChange={handleCoverImageChange}
               />
               {image && (
                 <img

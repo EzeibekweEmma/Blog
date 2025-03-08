@@ -28,7 +28,7 @@ body {
 .ql-container {
   border-radius: 0px 0 10px 10px;
   padding: 5px;
-  max-height: 50vh;
+  max-height: 65vh;
   overflow-y: auto;
 }
 
@@ -56,11 +56,11 @@ body {
 .prose-lg{
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1.4 !important;
+  line-height: 1.7 !important;
 }
 
 .prose-lg *{
-  margin: 2px 0;
+  margin: 3px 0;
 }
 
 .prose-lg h1 {
