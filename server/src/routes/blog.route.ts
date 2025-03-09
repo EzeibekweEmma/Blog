@@ -110,6 +110,58 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
   }
 });
 
+
+/**
+ * @route GET /all
+ * @desc Get all blog posts
+ * @access protected
+ */
+router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
+  try {
+    let limit = Number(req.query.limit) || 15;
+    let page = Number(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+    const sort = req.query.sort?.toString().toLowerCase() === "newest" ? -1 : 1;
+    const category = req.query.category?.toString().trim().toLowerCase() || undefined;
+    const filterByDeleted = req.query.filterByDeleted === "true";
+    const filterByPublished = req.query.filterByPublished === "true";
+    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
+
+    const option: Record<string, any> = {};
+    if (category) option.category = { $in: [category] };
+    if (filterByDeleted) option.isDeleted = true;
+    if (filterByPublished) option.isPublished = true;
+    if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
+
+    const posts = await BlogPost.find(option)
+      .sort({ createdAt: sort })
+      .limit(limit)
+      .skip(skip);
+
+    return res.status(200).json({ posts, hasMore: posts.length === limit });
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+/**
+ * @route GET /all/:slug
+ * @desc Get a single blog
+ * @access protected
+ */
+router.get('/all/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
+  try {
+    const blog = await BlogPost.findOne({ slug: req.params.slug });
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    return res.status(200).json({ blog });
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
 /**
  * @route GET /
  * @desc Get all blog posts (excluding deleted)
@@ -117,9 +169,9 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
-    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 12
+    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 15
     let page = req.query.page ? parseInt(<string>req.query.page) : 1
-    limit = isNaN(limit) ? 12 : limit
+    limit = isNaN(limit) ? 15 : limit
     page = isNaN(page) ? 1 : page
     const skip = (page - 1) * limit
 
@@ -159,47 +211,5 @@ router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-/**
- * @route GET /all
- * @desc Get all blog posts
- * @access protected
- */
-router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
-  try {
-    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 6
-    limit = isNaN(limit) ? 6 : limit
-    let page = req.query.page ? parseInt(<string>req.query.page) : 1
-    page = isNaN(page) ? 1 : page
-    const skip = (page - 1) * limit
-    const sort = req.query.sort ? String(req.query.sort).toLowerCase() === "newest" ? -1 : 1 : -1
-
-    const posts = await BlogPost.find().sort({ createdAt: sort }).limit(limit).skip(skip);
-
-    if (!posts) {
-      return res.status(400).json({ error: 'Error fetching blog posts' });
-    }
-    return res.status(200).json({ posts });
-  } catch (err) {
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
-})
-
-/**
- * @route GET /all/:slug
- * @desc Get a single blog
- * @access protected
- */
-router.get('/all/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
-  try {
-    const blog = await BlogPost.findOne({ slug: req.params.slug });
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' });
-    }
-    return res.status(200).json({ blog });
-  } catch (err) {
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
-})
 
 export default router;

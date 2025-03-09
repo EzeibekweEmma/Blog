@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface IBlogPost {
   image?: string;
   title: string;
@@ -11,4 +13,21 @@ export interface IBlogPost {
   isDeleted?: boolean;
   deletedAt?: Date;
   createdAt: Date;
+}
+
+export interface IOptionProps {
+  setOptions: Dispatch<
+    SetStateAction<{
+      category: string;
+      filterByDeleted: boolean;
+      filterByPublished: boolean;
+      searchQuery: string;
+    }>
+  >;
+  options: {
+    category: string;
+    filterByDeleted: boolean;
+    filterByPublished: boolean;
+    searchQuery: string;
+  };
 }

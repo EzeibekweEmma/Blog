@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { IBlogPost } from '../interface';
 import { getDaysAgo } from '../utils';
 import {
@@ -12,8 +12,16 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../main';
 
-const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
-  const { isFeatured, blog } = props;
+const BlogCard = ({
+  isFeatured,
+  blog,
+  setBlogs,
+}: {
+  isFeatured?: boolean;
+  blog: IBlogPost;
+  setBlogs: (blogs: IBlogPost[]) => void;
+}) => {
+  const location = useLocation();
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -26,6 +34,12 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
+
+        setBlogs((prevBlogs) =>
+          prevBlogs.map((b) =>
+            b.slug === blog.slug ? { ...b, isDeleted: option } : b
+          )
+        );
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
@@ -46,7 +60,7 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
              : 'sm:flex sm:gap-3 p-4 sm:p-2 sm:justify-between sm:items-center'
          }`}
     >
-      {userState && (
+      {userState && location.pathname !== '/' && (
         <div className="absolute top-5 right-5 flex gap-1.5">
           {blog.isFeatured ? (
             <button>
@@ -86,6 +100,7 @@ const BlogCard = (props: { isFeatured?: boolean; blog: IBlogPost }) => {
           }`}
         />
       </Link>
+
       <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0 sm:flex-1'}>
         <Link
           to={`/blogs/${blog.slug}`}

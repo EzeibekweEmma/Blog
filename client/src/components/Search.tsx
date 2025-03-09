@@ -1,22 +1,13 @@
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { IOptionProps } from '../interface';
 
-const Search = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-
+const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
   interface HandleKeyPressEvent extends React.KeyboardEvent<HTMLInputElement> {
     target: HTMLInputElement;
   }
 
   const handleKeyPress = (e: HandleKeyPressEvent) => {
     if (e.key === 'Enter') {
-      const query = e.target.value;
-      if (location.pathname === '/blogs') {
-        setSearchParams({ ...Object.fromEntries(searchParams), search: query });
-      } else {
-        navigate(`/blogs?search=${query}`);
-      }
+      setOptions({ ...options, searchQuery: e.target.value });
     }
   };
 

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import BlogCardEmpty from '../components/BlogCardEmptyState';
 import { API_URL } from '../main';
 import { useSearchParams } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const BlogListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,33 +16,55 @@ const BlogListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const [options, setOptions] = useState<{
+    category: string;
+    filterByDeleted: boolean;
+    filterByPublished: boolean;
+    searchQuery: string;
+  }>({
+    category: 'General',
+    filterByDeleted: false,
+    filterByPublished: false,
+    searchQuery: '',
+  });
 
-  const category = searchParams.get('category') || '';
   const limit = Number(searchParams.get('limit')) || 15;
+
+  const userState = Cookies.get('userDetails')
+    ? JSON.parse(Cookies.get('userDetails') || '{}')
+    : null;
 
   useEffect(() => {
     fetchBlogs(page);
-  }, [page, category]);
+  }, [page, options]);
 
   const fetchBlogs = async (currentPage: number) => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}/blogs?limit=${limit}&page=${currentPage}&category=${category}`,
-        { withCredentials: true }
+        userState
+          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&category=${options.category}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}`
+          : `${API_URL} /blogs?limit=${limit}&page=${currentPage}&category=${options.category}`
       );
 
       if (response.status.toString().startsWith('2')) {
-        const newBlogs = response.data.posts || [];
-        setBlogs((prevBlogs) => [...prevBlogs, ...newBlogs]);
+        const blogs = response.data.posts || [];
+        setBlogs((prevBlogs) => blogs);
         setHasMore(response.data.hasMore);
 
         // Update URL params only if changed
         if (Number(searchParams.get('page')) !== currentPage) {
           searchParams.set('page', String(currentPage));
           searchParams.set('limit', String(limit));
-          setSearchParams(searchParams);
         }
+        searchParams.set('searchQuery', options.searchQuery);
+        searchParams.set('category', options.category!);
+        searchParams.set('filterByDeleted', String(options.filterByDeleted));
+        searchParams.set(
+          'filterByPublished',
+          String(options.filterByPublished)
+        );
+        setSearchParams(searchParams);
       }
     } catch (error) {
       toast.error(
@@ -64,9 +87,9 @@ const BlogListPage = () => {
   return (
     <PageWrapper>
       <div>
-        <MainCategories />
+        <MainCategories setOptions={setOptions} options={options} />
         <span className="md:hidden">
-          <Search />
+          <Search setOptions={setOptions} options={options} />
         </span>
 
         {isLoading && blogs.length === 0 ? (
@@ -80,7 +103,7 @@ const BlogListPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 mt-8">
               {blogs.map((blog, index) => (
                 <div key={index}>
-                  <BlogCard isFeatured blog={blog} />
+                  <BlogCard isFeatured blog={blog} setBlogs={setBlogs} />
                 </div>
               ))}
             </div>

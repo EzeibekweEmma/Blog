@@ -7,18 +7,27 @@ import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
 import { formatDate } from '../utils';
 import Aside from '../components/Aside';
+import Cookies from 'js-cookie';
 
 const SingleBlogView = () => {
   const { slug } = useParams();
   const [blog, setBlog] = useState<IBlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const userState = Cookies.get('userDetails')
+    ? JSON.parse(Cookies.get('userDetails') || '{}')
+    : null;
+
   useEffect(() => {
     if (!slug) return;
 
     const fetchBlog = async () => {
       try {
-        const response = await axios.get(`${API_URL}/blogs/${slug}`);
+        const response = await axios.get(
+          userState
+            ? `${API_URL}/blogs/all/${slug}`
+            : `${API_URL} /blogs/${slug}`
+        );
         const blog = response.data?.blog || null;
         setBlog(blog);
       } catch (error) {
@@ -54,7 +63,7 @@ const SingleBlogView = () => {
         />
         <div className="flex gap-5">
           <div
-            className="prose-lg text-wrap prose-p:text-justify md:flex-[0.9]"
+            className="prose prose-lg text-wrap prose-p:text-justify md:flex-[0.9]"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
           <Aside />
