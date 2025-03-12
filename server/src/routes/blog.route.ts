@@ -171,7 +171,7 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
     const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
-    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
+    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || "";
     const skip = (page - 1) * limit
 
     const posts = await BlogPost.find({ isDeleted: false, isPublished: true, title: { $regex: searchQuery, $options: 'i' } })
