@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import config from '@/config'
-import { keyFunc, TokenPayload } from '@/utils/types';
+import config from '../config';
+import { keyFunc, TokenPayload } from '../utils/types';
 
 declare global {
   namespace Express {

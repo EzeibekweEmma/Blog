@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import User from '@/models/user.model';
+import User from '../models/user.model';
 import { LoginValidation } from '../utils/generalValidation';
 import { ZodError } from 'zod';
-import { generateTokenAndSetCookie } from '@/utils/setCookie';
-import Authentication from '@/middleware';
+import { generateTokenAndSetCookie } from '../utils/setCookie';
+import Authentication from '../middleware';
 
 const router = express.Router();
 

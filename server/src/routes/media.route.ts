@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
-import config from '@/config';
+import config from '../config';
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
-import { fileSchema } from '@/utils/generalValidation';
+import { fileSchema } from '../utils/generalValidation';
 import { ZodError } from 'zod';
-import Authentication from '@/middleware';
+import Authentication from '../middleware';
 
 const router = express.Router();
 

@@ -44,7 +44,7 @@ const BlogListPage = () => {
       const response = await axios.get(
         userState
           ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&category=${options.category}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}`
-          : `${API_URL} /blogs?limit=${limit}&page=${currentPage}&category=${options.category}`
+          : `${API_URL} /blogs?limit=${limit}&page=${currentPage}&category=${options.category}&searchQuery=${options.searchQuery}`
       );
 
       if (response.status.toString().startsWith('2')) {

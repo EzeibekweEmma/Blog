@@ -1,5 +1,5 @@
-import config from '@/config'
-import { keyFunc } from '@/utils/types'
+import config from '../config'
+import { keyFunc } from '../utils/types'
 import { Response } from 'express'
 import jwt from 'jsonwebtoken'
 

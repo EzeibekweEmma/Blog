@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
-import User from '@/models/user.model';
-import { EditValidation } from '@/utils/generalValidation';
-import { capitalize } from '@/utils/helper';
+import User from '../models/user.model';
+import { EditValidation } from '../utils/generalValidation';
+import { capitalize } from '../utils/helper';
 import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
-import Authentication from '@/middleware';
+import Authentication from '../middleware';
 
 const router = express.Router();
 

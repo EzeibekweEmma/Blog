@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
 import { MongoServerError } from 'mongodb';
-import { BlogPostValidation } from '@/utils/generalValidation';
-import { capitalize, generateUniqueSlug } from '@/utils/helper';
+import { BlogPostValidation } from '../utils/generalValidation';
+import { capitalize, generateUniqueSlug } from '../utils/helper';
 import { ZodError } from 'zod';
-import Authentication from '@/middleware';
-import BlogPost from '@/models/blog-post.model';
+import Authentication from '../middleware';
+import BlogPost from '../models/blog-post.model';
 
 const router = express.Router();
 
@@ -118,8 +118,8 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
  */
 router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    let limit = Number(req.query.limit) || 15;
-    let page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
+    const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
     const skip = (page - 1) * limit;
     const sort = req.query.sort?.toString().toLowerCase() === "newest" ? -1 : 1;
     const category = req.query.category?.toString().trim().toLowerCase() || undefined;
@@ -169,13 +169,12 @@ router.get('/all/:slug', Authentication, async (req: Request, res: Response): Pr
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
-    let limit = req.query.limit ? parseInt(<string>req.query.limit) : 15
-    let page = req.query.page ? parseInt(<string>req.query.page) : 1
-    limit = isNaN(limit) ? 15 : limit
-    page = isNaN(page) ? 1 : page
+    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
+    const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
+    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
     const skip = (page - 1) * limit
 
-    const posts = await BlogPost.find({ isDeleted: false, isPublished: true })
+    const posts = await BlogPost.find({ isDeleted: false, isPublished: true, title: { $regex: searchQuery, $options: 'i' } })
       .sort({ createdAt: -1 }).limit(limit).skip(skip).select('_id title description image slug createdAt isFeatured');
     if (!posts) {
       return res.status(400).json({ error: 'Error fetching blog posts' });
