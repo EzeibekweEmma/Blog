@@ -171,10 +171,15 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
     const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
-    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || "";
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
+    const category = req.query.category?.toString().trim().toLowerCase() || undefined;
+    const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
 
-    const posts = await BlogPost.find({ isDeleted: false, isPublished: true, title: { $regex: searchQuery, $options: 'i' } })
+    const option: Record<string, any> = { isDeleted: false, isPublished: true, };
+    if (category) option.category = { $in: [category] };
+    if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
+
+    const posts = await BlogPost.find(option)
       .sort({ createdAt: -1 }).limit(limit).skip(skip).select('_id title description image slug createdAt isFeatured');
     if (!posts) {
       return res.status(400).json({ error: 'Error fetching blog posts' });
