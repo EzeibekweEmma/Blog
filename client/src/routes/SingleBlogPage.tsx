@@ -26,7 +26,7 @@ const SingleBlogView = () => {
         const response = await axios.get(
           userState
             ? `${API_URL}/blogs/all/${slug}`
-            : `${API_URL} /blogs/${slug}`
+            : `${API_URL}/blogs/${slug}`
         );
         const blog = response.data?.blog || null;
         setBlog(blog);

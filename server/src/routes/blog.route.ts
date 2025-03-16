@@ -136,7 +136,8 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
     const posts = await BlogPost.find(option)
       .sort({ createdAt: sort })
       .limit(limit)
-      .skip(skip);
+      .skip(skip)
+      .select('_id title description image slug createdAt isFeatured')
 
     return res.status(200).json({ posts, hasMore: posts.length === limit });
   } catch (err) {
