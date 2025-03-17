@@ -17,7 +17,7 @@ const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
       if (searchQuery.length >= 3 || searchQuery.length === 0) {
         setOptions({ ...options, searchQuery });
       }
-    }, 1000);
+    }, 700);
 
     return () => clearTimeout(delaySearch);
   }, [searchQuery]);

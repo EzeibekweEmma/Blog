@@ -55,6 +55,16 @@ export const BlogPostValidation = z.object({
   isPublished: z.boolean().optional().nullable()
 })
 
+export const EditBlogPostValidation = z.object({
+  title: z.string().min(5, 'Title must be at least 5 character(s) long').max(100, 'Title should not exceed 100 character(s)').nullable().optional(),
+  description: z.string().min(50, 'Description must be at least 50 character(s) long').max(200, 'Description should not exceed 200 character(s)').nullable().optional(),
+  image: z.string().url().nullable().optional(),
+  content: z.string().min(20, 'Content must be at least 20 character(s) long').nullable().optional(),
+  category: z.array(z.string()).default(['general']).nullable().optional(),
+  isFeatured: z.boolean().optional().nullable(),
+  isPublished: z.boolean().optional().nullable()
+})
+
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpe', 'image/png', 'image/gif', 'image/webp', 'video/mp4']
 export const fileSchema = z.object({
   fieldname: z.literal('file'),

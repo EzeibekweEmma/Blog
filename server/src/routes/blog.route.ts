@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { MongoServerError } from 'mongodb';
-import { BlogPostValidation } from '../utils/generalValidation';
+import { BlogPostValidation, EditBlogPostValidation } from '../utils/generalValidation';
 import { capitalize, generateUniqueSlug } from '../utils/helper';
 import { ZodError } from 'zod';
 import Authentication from '../middleware';
@@ -45,12 +45,29 @@ router.post('/post', Authentication, async (req: Request, res: Response): Promis
  */
 router.put('/edit/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const field = BlogPostValidation.parse(req.body);
-    field.title = capitalize(field.title);
-    const updatedPost = await BlogPost.findOneAndUpdate({ slug: req.params.slug }, { ...field, updatedAt: new Date() }, { new: true });
+    const field = EditBlogPostValidation.parse(req.body);
+    field.title = capitalize(field.title || '');
 
-    if (!updatedPost) {
+    const existingPost = await BlogPost.findOne({ slug: req.params.slug });
+    if (!existingPost) {
       return res.status(404).json({ error: 'Blog not found' });
+    }
+
+    if (field.isFeatured) {
+      if (existingPost.isDeleted) {
+        return res.status(400).json({ error: "Can't feature a deleted blog" });
+      }
+
+      const checkFeatured = await BlogPost.countDocuments({ isFeatured: true });
+
+      if (checkFeatured + 1 >= 3) {
+        return res.status(400).json({ error: 'Only 3 blogs can be featured.' });
+      }
+    }
+
+    const updatedPost = await BlogPost.findOneAndUpdate({ slug: req.params.slug }, { ...field, updatedAt: new Date() }, { new: true });
+    if (!updatedPost) {
+      return res.status(400).json({ error: 'Failed to update blog, Please try again' });
     }
     return res.status(200).json({ message: 'Blog updated successfully', slug: updatedPost.slug });
   } catch (err) {
@@ -71,17 +88,22 @@ router.put('/edit/:slug', Authentication, async (req: Request, res: Response): P
  */
 router.delete('/delete/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
+    const existingPost = await BlogPost.findOne({ slug: req.params.slug, isDeleted: false });
+    if (!existingPost) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+
     const deletedPost = await BlogPost.findOneAndUpdate(
       { slug: req.params.slug, isDeleted: false },
-      { isDeleted: true, deletedAt: new Date() },
+      { isDeleted: true, deletedAt: new Date(), isFeatured: false },
       { new: true }
     );
 
     if (!deletedPost) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ error: 'Failed to delete blog, Please try again' });
     }
 
-    return res.status(200).json({ message: 'Blog deleted successfully', blog: deletedPost });
+    return res.status(200).json({ message: 'Blog deleted successfully' });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -94,6 +116,11 @@ router.delete('/delete/:slug', Authentication, async (req: Request, res: Respons
  */
 router.patch('/restore/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
+    const existingPost = await BlogPost.findOne({ slug: req.params.slug, isDeleted: true });
+    if (!existingPost) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+
     const restoredBlog = await BlogPost.findOneAndUpdate(
       { slug: req.params.slug, isDeleted: true },
       { isDeleted: false, deletedAt: null },
@@ -101,10 +128,10 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
     );
 
     if (!restoredBlog) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ error: 'Failed to restore blog, Please try again' });
     }
 
-    return res.status(200).json({ message: 'Blog restored successfully', blog: restoredBlog });
+    return res.status(200).json({ message: 'Blog restored successfully' });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }

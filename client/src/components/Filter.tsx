@@ -1,18 +1,20 @@
 import React from 'react';
 import { IOptionProps } from '../interface';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Filter: React.FC<IOptionProps & { style?: string }> = ({
   setOptions,
   options,
   style = '-top-12 right-2',
 }) => {
+  const location = useLocation();
+
   return (
     <div
       className={`absolute xl:text-lg font-medium flex w-full justify-between sm:px-5 items-center gap-2  ${style}`}
     >
       <Link
-        to={'#'}
+        to={`${location.pathname}/create`}
         className="xl:text-lg font-medium flex items-center gap-2 hover:border-b-2 border-[#2c586a] transition-all ease-in-out"
       >
         Create

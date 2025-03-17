@@ -26,18 +26,35 @@ const BlogCard = ({
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
 
-  const handleDelete = async (option: boolean) => {
+  const handleChange = async (
+    option: boolean,
+    action: 'handleDelete' | 'handleIsFeatured'
+  ) => {
     try {
-      const response = option
-        ? await axios.delete(`${API_URL}/blogs/delete/${blog.slug}`)
-        : await axios.patch(`${API_URL}/blogs/restore/${blog.slug}`);
+      const endpoint =
+        action === 'handleDelete'
+          ? option
+            ? `${API_URL}/blogs/delete/${blog.slug}`
+            : `${API_URL}/blogs/restore/${blog.slug}`
+          : `${API_URL}/blogs/edit/${blog.slug}`;
+
+      const method =
+        action === 'handleIsFeatured' ? 'put' : option ? 'delete' : 'patch';
+      const data = action === 'handleIsFeatured' ? { isFeatured: option } : {};
+
+      const response = await axios({ method, url: endpoint, data });
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
 
-        setBlogs((prevBlogs) =>
-          prevBlogs.map((b) =>
-            b.slug === blog.slug ? { ...b, isDeleted: option } : b
+        const updateBlog =
+          action === 'handleIsFeatured'
+            ? { ...blog, isFeatured: option }
+            : { ...blog, isDeleted: option, isFeatured: option };
+
+        setBlogs((prevBlogs: IBlogPost[]) =>
+          prevBlogs.map((b: IBlogPost) =>
+            b.slug === blog.slug ? updateBlog : b
           )
         );
       }
@@ -63,20 +80,20 @@ const BlogCard = ({
       {userState && location.pathname !== '/' && (
         <div className="absolute top-5 right-5 flex gap-1.5">
           {blog.isFeatured ? (
-            <button>
+            <button onClick={() => handleChange(false, 'handleIsFeatured')}>
               <IoHeartSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
             </button>
           ) : (
-            <button>
+            <button onClick={() => handleChange(true, 'handleIsFeatured')}>
               <IoHeartOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
             </button>
           )}
           {blog.isDeleted ? (
-            <button onClick={() => handleDelete(false)}>
+            <button onClick={() => handleChange(false, 'handleDelete')}>
               <IoTrashBinSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
             </button>
           ) : (
-            <button onClick={() => handleDelete(true)}>
+            <button onClick={() => handleChange(true, 'handleDelete')}>
               <IoTrashBinOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
             </button>
           )}
