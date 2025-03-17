@@ -12,7 +12,12 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const authRoutes = ['/blogs/create', '/news/create', '/blogs/:slug/edit'];
+  const authRoutes = [
+    '/blogs/create',
+    '/news/create',
+    '/blogs/edit/',
+    '/news/edit/',
+  ];
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -22,7 +27,9 @@ const Navbar = () => {
       navigate('/');
     } else if (
       !userState &&
-      authRoutes.includes(location.pathname.toLowerCase())
+      authRoutes.some((route) =>
+        location.pathname.toLowerCase().includes(route.toLowerCase())
+      )
     ) {
       navigate('/');
     }

@@ -5,8 +5,8 @@ import {
   IoHeartOutline,
   IoHeartSharp,
   IoTrashBinOutline,
-  IoTrashBinSharp,
 } from 'react-icons/io5';
+import { MdSettingsBackupRestore } from 'react-icons/md';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -50,8 +50,8 @@ const BlogCard = ({
         const updateBlog =
           action === 'handleIsFeatured'
             ? { ...blog, isFeatured: option }
-            : { ...blog, isDeleted: option, isFeatured: option };
-
+            : { ...blog, isDeleted: option, isFeatured: false };
+        // TODO: when reload it didn't get updated data
         setBlogs((prevBlogs: IBlogPost[]) =>
           prevBlogs.map((b: IBlogPost) =>
             b.slug === blog.slug ? updateBlog : b
@@ -90,7 +90,7 @@ const BlogCard = ({
           )}
           {blog.isDeleted ? (
             <button onClick={() => handleChange(false, 'handleDelete')}>
-              <IoTrashBinSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
+              <MdSettingsBackupRestore className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70" />
             </button>
           ) : (
             <button onClick={() => handleChange(true, 'handleDelete')}>

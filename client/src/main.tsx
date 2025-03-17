@@ -11,6 +11,7 @@ import MainLayout from './layouts/MainLayout';
 import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import 'react-quill/dist/quill.snow.css';
+import EditBlogPage from './routes/EditBlogPage';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: '/blogs/create',
         element: <CrateBlogPage />,
+      },
+      {
+        path: '/blogs/edit/:slug',
+        element: <EditBlogPage />,
       },
       {
         path: '/blogs/:slug',

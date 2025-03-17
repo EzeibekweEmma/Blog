@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import PageWrapper from '../components/PageWrapper';
@@ -8,6 +8,10 @@ import { IBlogPost } from '../interface';
 import { formatDate } from '../utils';
 import Aside from '../components/Aside';
 import Cookies from 'js-cookie';
+import { IoTrashBinOutline } from 'react-icons/io5';
+import { FiEdit } from 'react-icons/fi';
+import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 const SingleBlogView = () => {
   const { slug } = useParams();
@@ -40,6 +44,25 @@ const SingleBlogView = () => {
     fetchBlog();
   }, [slug]);
 
+  const handleChange = async (action: 'delete' | 'restore') => {
+    try {
+      const response =
+        action === 'delete'
+          ? await axios.delete(`${API_URL}/blogs/${action}/${slug}`)
+          : await axios.patch(`${API_URL}/blogs/${action}/${slug}`);
+
+      if (response.status.toString().startsWith('2')) {
+        toast.success(response.data.message);
+        setBlog({
+          ...blog,
+          isDeleted: action === 'delete' ? true : false,
+        } as IBlogPost);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (isLoading) return <p className="text-center mt-10">Loading...</p>;
   if (!blog) return <p className="text-center mt-10">No blog found</p>;
 
@@ -48,7 +71,37 @@ const SingleBlogView = () => {
 
   return (
     <PageWrapper>
-      <div className="md:-mt-10">
+      <div className="md:-mt-10 relative">
+        {userState && (
+          <div className="absolute -top-5 right-5 gap-3 flex">
+            <button
+              onClick={() =>
+                handleChange(blog.isDeleted ? 'restore' : 'delete')
+              }
+              className="hover:border-[#2c586a] px-2 py-1 rounded-md transition-all ease-in-out border-2 flex gap-0.5 items-center"
+            >
+              {blog.isDeleted ? (
+                <>
+                  <MdOutlineSettingsBackupRestore className="text-2xl h-7 w-7 p-1 text-[#2c586a] rounded-full" />
+                  <span>Restore</span>
+                </>
+              ) : (
+                <>
+                  <IoTrashBinOutline className="text-2xl h-7 w-7 p-1 text-[#2c586a] rounded-full stroke-2" />
+                  <span>Delete</span>
+                </>
+              )}
+            </button>
+            <Link
+              to={`/blogs/edit/${blog.slug}`}
+              className="hover:border-[#2c586a] px-2 py-1 rounded-md transition-all ease-in-out border-2 flex gap-0.5 items-center"
+            >
+              <FiEdit className="text-2xl h-7 w-7 p-1 text-[#2c586a] rounded-full stroke-2" />
+              <span>Edit</span>
+            </Link>
+          </div>
+        )}
+
         <div className="flex font-medium text-[#2c586a] items-center text-sm gap-1.5">
           <span>{formatDate(blog.createdAt)}</span>
           <span className="text-sm">•</span>
@@ -59,9 +112,9 @@ const SingleBlogView = () => {
         <img
           src={blog.image}
           alt="Blog Cover"
-          className="mb-6 w-full max-w-h-[70vh] rounded-lg shadow-md"
+          className="mb-6 w-full h-[80vh] rounded-lg shadow-md object-cover object-center"
         />
-        <div className="flex gap-5">
+        <div className="flex gap-5 lg:flex-row flex-col">
           <div
             className="prose prose-lg text-wrap prose-p:text-justify md:flex-[0.9]"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}

@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import { IOptionProps } from '../interface';
-import Filter from './Filter';
 import { useEffect, useState } from 'react';
 
 interface UserState {
@@ -32,13 +31,6 @@ const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
 
   return (
     <div className="w-full lg:w-fit relative">
-      {userState && (
-        <Filter
-          setOptions={setOptions}
-          options={options}
-          style={'-top-9 md:hidden flex'}
-        />
-      )}
       <div className="bg-[#e6edf0] p-1.5 rounded-full flex items-center gap-2 w-full lg:w-fit">
         <div className="p-1.5 rounded-full bg-[#f3f8f6]">
           <svg
