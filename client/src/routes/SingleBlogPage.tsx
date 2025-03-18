@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import PageWrapper from '../components/PageWrapper';
@@ -17,6 +17,7 @@ const SingleBlogView = () => {
   const { slug } = useParams();
   const [blog, setBlog] = useState<IBlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
@@ -35,6 +36,9 @@ const SingleBlogView = () => {
         const blog = response.data?.blog || null;
         setBlog(blog);
       } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          return navigate('/404');
+        }
         console.error(error);
       } finally {
         setIsLoading(false);

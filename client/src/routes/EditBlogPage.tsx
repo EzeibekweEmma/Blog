@@ -1,21 +1,56 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PageWrapper from '../components/PageWrapper';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
+import { IBlogPost } from '../interface';
 
 const EditBlogPage = () => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [selectedCategories, setSelectedCategories] = useState(['general']);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([
+    'general',
+  ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const quillRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPublished, setIsPublished] = useState(false);
+  const [blog, setBlog] = useState<IBlogPost | null>(null);
 
+  const quillRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const slug = location.pathname.split('/').pop();
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/blogs/all/${slug}`);
+        const blog = response.data?.blog || null;
+        setBlog(blog);
+
+        setIsPublished(blog.isPublished);
+        setTitle(blog.title || '');
+        setDescription(blog.description || '');
+        setContent(blog.content || '');
+        setImage(blog.image || null);
+        setSelectedCategories(blog.categories || ['general']);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          return navigate('/404');
+        }
+        console.error('Error fetching blog:', error);
+        toast.error('Failed to load blog data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [slug, navigate]);
 
   const handleContent = (e) => {
     setContent(e);
@@ -28,7 +63,7 @@ const EditBlogPage = () => {
     input.click();
 
     input.onchange = async () => {
-      const file = input.files[0];
+      const file = input.files?.[0];
       if (!file) return;
 
       const formData = new FormData();
@@ -36,17 +71,15 @@ const EditBlogPage = () => {
 
       try {
         const response = await axios.post(`${API_URL}/media-upload`, formData);
+        if (!response.data?.url) throw new Error('Upload failed');
 
-        if (response.status.toString().startsWith('2')) {
-          const data = response.data;
-          if (!data.url) throw new Error('Upload failed');
-          // Insert image/video into Quill
-          const quill = quillRef.current?.getEditor();
+        const quill = quillRef.current?.getEditor();
+        if (quill) {
           const range = quill.getSelection();
           quill.insertEmbed(
-            range.index,
+            range?.index ?? 0,
             file.type.startsWith('video') ? 'video' : 'image',
-            data.url
+            response.data.url
           );
         }
       } catch (err) {
@@ -57,30 +90,29 @@ const EditBlogPage = () => {
 
   const handleCoverImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      try {
-        const response = await axios.post(`${API_URL}/media-upload`, formData);
-        if (response.status.toString().startsWith('2')) {
-          const data = response.data;
-          if (!data.url) throw new Error('Upload failed');
-          setImage(data.url);
-        }
-      } catch (err) {
-        console.error('Cover image upload error:', err);
-        toast.error('Cover image upload failed');
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(`${API_URL}/media-upload`, formData);
+      if (response.status.toString().startsWith('2')) {
+        const data = response.data;
+        if (!data.url) throw new Error('Upload failed');
+        setImage(data.url);
       }
+    } catch (err) {
+      console.error('Cover image upload error:', err);
+      toast.error('Cover image upload failed');
     }
   };
 
-  const handleCategoryChange = (event) => {
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
-    if (checked) {
-      setSelectedCategories([...selectedCategories, value]);
-    } else {
-      setSelectedCategories(selectedCategories.filter((cat) => cat !== value));
-    }
+    setSelectedCategories((prev) =>
+      checked ? [...prev, value] : prev.filter((cat) => cat !== value)
+    );
   };
 
   const handleSubmit = async (isPublished: boolean) => {
@@ -96,7 +128,10 @@ const EditBlogPage = () => {
     };
 
     try {
-      const response = await axios.post(`${API_URL}/blogs/post`, payload);
+      const response = await axios.put(
+        `${API_URL}/blogs/edit/${slug}`,
+        payload
+      );
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
         return navigate(`/blogs/${response.data.slug}`);
@@ -134,7 +169,7 @@ const EditBlogPage = () => {
     <PageWrapper>
       <div className="p-6 bg-white shadow-md rounded-lg mt-10">
         <h1 className="text-3xl font-bold text-[#2c586a] mb-6">
-          Create Blog Post
+          Edit Blog Post
         </h1>
 
         {/* Title Input */}
@@ -259,23 +294,25 @@ const EditBlogPage = () => {
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-[#1e4050]'
             }`}
-            onClick={() => handleSubmit(true)}
+            onClick={() => handleSubmit(isPublished ? true : false)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Publishing...' : 'Publish Blog'}
+            {isSubmitting ? 'Updating...' : 'Update Blog'}
           </button>
 
-          <button
-            className={`bg-gray-400 text-sm text-white font-medium py-3 px-6 rounded-lg ${
-              isSubmitting
-                ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-gray-500'
-            }`}
-            onClick={() => handleSubmit(false)}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Saving...' : 'Save as draft / Preview'}
-          </button>
+          {!isPublished && (
+            <button
+              className={`bg-[#2c586a] text-sm text-white font-medium py-3 px-6 rounded-lg ${
+                isSubmitting
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-[#1e4050]'
+              }`}
+              onClick={() => handleSubmit(true)}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Publishing...' : 'Publish Blog'}
+            </button>
+          )}
         </div>
       </div>
     </PageWrapper>
