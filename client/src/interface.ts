@@ -5,7 +5,7 @@ export interface IBlogPost {
   title: string;
   slug: string;
   description: string;
-  category: string[];
+  categories: string[];
   content: string;
   isFeatured?: boolean;
   isPublished?: boolean;
@@ -18,14 +18,14 @@ export interface IBlogPost {
 export interface IOptionProps {
   setOptions: Dispatch<
     SetStateAction<{
-      category: string;
+      categories: string;
       filterByDeleted: boolean;
       filterByPublished: boolean;
       searchQuery: string;
     }>
   >;
   options: {
-    category: string;
+    categories: string;
     filterByDeleted: boolean;
     filterByPublished: boolean;
     searchQuery: string;

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
+import { categories } from '../helper';
 
 const EditBlogPage = () => {
   const [content, setContent] = useState('');
@@ -108,7 +109,9 @@ const EditBlogPage = () => {
     }
   };
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCategoriesChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { value, checked } = event.target;
     setSelectedCategories((prev) =>
       checked ? [...prev, value] : prev.filter((cat) => cat !== value)
@@ -242,28 +245,21 @@ const EditBlogPage = () => {
             <div className="flex flex-col gap-2 flex-1">
               <label className="text-sm font-medium">Choose categories:</label>
               <div className="flex flex-wrap md:grid grid-cols-2 lg:grid-cols-3 gap-2">
-                {[
-                  'General',
-                  'Web Design',
-                  'Development',
-                  'Databases',
-                  'SEO',
-                  'Marketing',
-                ].map((category) => (
+                {categories.map((categories) => (
                   <label
-                    key={category}
+                    key={categories}
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <input
                       type="checkbox"
-                      value={category.toLowerCase()}
+                      value={categories.toLowerCase()}
                       checked={selectedCategories.includes(
-                        category.toLowerCase()
+                        categories.toLowerCase()
                       )}
-                      onChange={handleCategoryChange}
+                      onChange={handleCategoriesChange}
                       className="w-4 h-4"
                     />
-                    {category}
+                    {categories}
                   </label>
                 ))}
               </div>

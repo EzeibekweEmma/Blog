@@ -3,6 +3,7 @@ import Search from './Search';
 import Cookies from 'js-cookie';
 import { IOptionProps } from '../interface';
 import { Link } from 'react-router-dom';
+import { categories } from '../helper';
 
 interface UserState {
   userDetails: string;
@@ -11,16 +12,7 @@ interface UserState {
 const MainCategories: React.FC<IOptionProps> = ({ setOptions, options }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const urlCategory = searchParams.get('category') || 'General';
-
-  const categories: string[] = [
-    'General',
-    'Web Design',
-    'Development',
-    'Database',
-    'SEO',
-    'Marketing',
-  ];
+  const urlCategories = searchParams.get('categories') || 'General';
 
   const userState: UserState | null = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
@@ -69,15 +61,15 @@ const MainCategories: React.FC<IOptionProps> = ({ setOptions, options }) => {
         </div>
       )}
       <div className="flex-1 flex items-center justify-between flex-wrap w-full mt-8 mb-2 lg:m-0">
-        {categories.map((category, index) => (
+        {categories.map((categories, index) => (
           <button
-            onClick={() => setOptions({ ...options, category })}
+            onClick={() => setOptions({ ...options, categories })}
             key={index}
             className={`xl:text-lg font-medium hover:text-[#2c586a] hover:border-b-2 border-[#2c586a] transition-all ease-in-out ${
-              urlCategory === category && 'border-b-2'
+              urlCategories === categories && 'border-b-2'
             }`}
           >
-            {category}
+            {categories}
           </button>
         ))}
       </div>

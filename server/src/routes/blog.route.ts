@@ -46,7 +46,8 @@ router.post('/post', Authentication, async (req: Request, res: Response): Promis
 router.put('/edit/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const field = EditBlogPostValidation.parse(req.body);
-    field.title = capitalize(field.title || '');
+    if (field.title && field.title.length > 0)
+      field.title = capitalize(field.title || '');
 
     const existingPost = await BlogPost.findOne({ slug: req.params.slug });
     if (!existingPost) {
@@ -149,13 +150,13 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
     const skip = (page - 1) * limit;
     const sort = req.query.sort?.toString().toLowerCase() === "newest" ? -1 : 1;
-    const category = req.query.category?.toString().trim().toLowerCase() || undefined;
+    const categories = req.query.categories?.toString().trim().toLowerCase() || undefined;
     const filterByDeleted = req.query.filterByDeleted === "true";
     const filterByPublished = req.query.filterByPublished === "true";
     const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
 
     const option: Record<string, any> = {};
-    if (category) option.category = { $in: [category] };
+    if (categories && categories.toLowerCase() !== 'general') option.categories = { $in: [categories] };
     if (filterByDeleted) option.isDeleted = true;
     if (filterByPublished) option.isPublished = true;
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
@@ -200,11 +201,11 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
     const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
     const skip = (page - 1) * limit;
-    const category = req.query.category?.toString().trim().toLowerCase() || undefined;
+    const categories = req.query.categories?.toString().trim().toLowerCase() || undefined;
     const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
 
     const option: Record<string, any> = { isDeleted: false, isPublished: true, };
-    if (category) option.category = { $in: [category] };
+    if (categories) option.categories = { $in: [categories] };
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
     const posts = await BlogPost.find(option)

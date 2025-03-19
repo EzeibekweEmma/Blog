@@ -17,12 +17,12 @@ const BlogListPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
   const [options, setOptions] = useState<{
-    category: string;
+    categories: string;
     filterByDeleted: boolean;
     filterByPublished: boolean;
     searchQuery: string;
   }>({
-    category: 'General',
+    categories: 'General',
     filterByDeleted: false,
     filterByPublished: false,
     searchQuery: '',
@@ -43,8 +43,8 @@ const BlogListPage = () => {
     try {
       const response = await axios.get(
         userState
-          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&category=${options.category}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}`
-          : `${API_URL}/blogs?limit=${limit}&page=${currentPage}&category=${options.category}&searchQuery=${options.searchQuery}`
+          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&categories=${options.categories}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}`
+          : `${API_URL}/blogs?limit=${limit}&page=${currentPage}&categories=${options.categories}&searchQuery=${options.searchQuery}`
       );
 
       if (response.status.toString().startsWith('2')) {
@@ -58,7 +58,7 @@ const BlogListPage = () => {
           searchParams.set('limit', String(limit));
         }
         searchParams.set('searchQuery', options.searchQuery);
-        searchParams.set('category', options.category!);
+        searchParams.set('categories', options.categories!);
         searchParams.set('filterByDeleted', String(options.filterByDeleted));
         searchParams.set(
           'filterByPublished',

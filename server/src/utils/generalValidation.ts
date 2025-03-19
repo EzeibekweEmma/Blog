@@ -50,7 +50,7 @@ export const BlogPostValidation = z.object({
   description: z.string().min(50, 'Description must be at least 50 character(s) long').max(200, 'Description should not exceed 200 character(s)'),
   image: z.string().url(),
   content: z.string().min(20, 'Content must be at least 20 character(s) long'),
-  category: z.array(z.string()).default(['general']),
+  categories: z.array(z.string()).default(['general']),
   isFeatured: z.boolean().optional().nullable(),
   isPublished: z.boolean().optional().nullable()
 })
@@ -60,7 +60,7 @@ export const EditBlogPostValidation = z.object({
   description: z.string().min(50, 'Description must be at least 50 character(s) long').max(200, 'Description should not exceed 200 character(s)').nullable().optional(),
   image: z.string().url().nullable().optional(),
   content: z.string().min(20, 'Content must be at least 20 character(s) long').nullable().optional(),
-  category: z.array(z.string()).default(['general']).nullable().optional(),
+  categories: z.array(z.string()).nullable().optional(),
   isFeatured: z.boolean().optional().nullable(),
   isPublished: z.boolean().optional().nullable()
 })

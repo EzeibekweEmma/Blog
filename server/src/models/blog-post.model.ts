@@ -23,7 +23,7 @@ const blogsSchema = new Schema(
       type: String,
       required: true
     },
-    category: {
+    categories: {
       type: [String],
       default: ['general']
     },
