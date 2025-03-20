@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
 import { categories } from '../helper';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 const EditBlogPage = () => {
   const [content, setContent] = useState('');
@@ -166,6 +167,14 @@ const EditBlogPage = () => {
       },
     },
   };
+
+  if (isLoading)
+    return (
+      <div className="h-[80vh] w-full flex justify-center items-center  text-[#2c586a]">
+        <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
+      </div>
+    );
+  if (!blog) return;
 
   return (
     <PageWrapper>

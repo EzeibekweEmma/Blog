@@ -51,7 +51,7 @@ const BlogCard = ({
           action === 'handleIsFeatured'
             ? { ...blog, isFeatured: option }
             : { ...blog, isDeleted: option, isFeatured: false };
-        // TODO: when reload it didn't get updated data
+
         setBlogs((prevBlogs: IBlogPost[]) =>
           prevBlogs.map((b: IBlogPost) =>
             b.slug === blog.slug ? updateBlog : b
@@ -79,15 +79,16 @@ const BlogCard = ({
     >
       {userState && location.pathname !== '/' && (
         <div className="absolute top-5 right-5 flex gap-1.5">
-          {blog.isFeatured ? (
-            <button onClick={() => handleChange(false, 'handleIsFeatured')}>
-              <IoHeartSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
-            </button>
-          ) : (
-            <button onClick={() => handleChange(true, 'handleIsFeatured')}>
-              <IoHeartOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
-            </button>
-          )}
+          {!blog.isDeleted &&
+            (blog.isFeatured ? (
+              <button onClick={() => handleChange(false, 'handleIsFeatured')}>
+                <IoHeartSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
+              </button>
+            ) : (
+              <button onClick={() => handleChange(true, 'handleIsFeatured')}>
+                <IoHeartOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
+              </button>
+            ))}
           {blog.isDeleted ? (
             <button onClick={() => handleChange(false, 'handleDelete')}>
               <MdSettingsBackupRestore className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70" />
@@ -107,6 +108,7 @@ const BlogCard = ({
           <IoBookmarkOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
         </button>
       </div> */}
+
       {/* image */}
       <Link to={`/blogs/${blog.slug}`} className="sm:flex-[0.4]">
         <img

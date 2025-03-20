@@ -165,7 +165,7 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
       .sort({ createdAt: sort })
       .limit(limit)
       .skip(skip)
-      .select('_id title description image slug createdAt isFeatured')
+      .select('_id title description image slug createdAt isFeatured isDeleted')
 
     const totalPosts = await BlogPost.countDocuments(option);
     const hasMore = Math.ceil(totalPosts / limit) > page;
@@ -215,7 +215,7 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
-      .select('_id title description image slug createdAt isFeatured')
+      .select('_id title description image slug createdAt isFeatured isDeleted')
 
     if (!posts) {
       return res.status(400).json({ error: 'Error fetching blog posts' });

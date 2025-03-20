@@ -64,7 +64,7 @@ const MainCategories: React.FC<IOptionProps> = ({ setOptions, options }) => {
           <button
             onClick={() => setOptions({ ...options, categories })}
             key={index}
-            className={`xl:text-lg font-medium hover:text-[#2c586a] hover:border-b-2 border-[#2c586a] transition-all ease-in-out ${
+            className={`xl:text-lg font-medium text-[#2c586a] hover:border-b-2 border-[#2c586a] transition-all ease-in-out ${
               urlCategories.toLowerCase() === categories.toLowerCase() &&
               'border-b-2'
             }`}
