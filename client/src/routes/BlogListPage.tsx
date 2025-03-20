@@ -1,42 +1,37 @@
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import MainCategories from '../components/MainCategories';
 import BlogCard from '../components/BlogCard';
+import BlogCardEmpty from '../components/BlogCardEmptyState';
 import Search from '../components/Search';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import BlogCardEmpty from '../components/BlogCardEmptyState';
-import { API_URL } from '../main';
-import { useSearchParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { API_URL } from '../main';
+import { IBlogPost } from '../interface';
 
 const BlogListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [blogs, setBlogs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<IBlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-  const [options, setOptions] = useState<{
-    categories: string;
-    filterByDeleted: boolean;
-    filterByPublished: boolean;
-    searchQuery: string;
-  }>({
-    categories: 'General',
-    filterByDeleted: false,
-    filterByPublished: false,
-    searchQuery: '',
+  const [options, setOptions] = useState({
+    categories: searchParams.get('categories') || 'General',
+    filterByDeleted: searchParams.get('filterByDeleted') === 'true',
+    filterByPublished: searchParams.get('filterByPublished') === 'true',
+    searchQuery: searchParams.get('searchQuery') || '',
   });
 
-  const limit = Number(searchParams.get('limit')) || 15;
-
+  const limit = Number(searchParams.get('limit')) || 18;
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
 
   useEffect(() => {
     fetchBlogs(page);
-  }, [page, options]);
+  }, [page, JSON.stringify(options)]);
 
   const fetchBlogs = async (currentPage: number) => {
     setIsLoading(true);
@@ -48,23 +43,19 @@ const BlogListPage = () => {
       );
 
       if (response.status.toString().startsWith('2')) {
-        const blogs = response.data.posts || [];
-        setBlogs((prevBlogs) => blogs);
+        setBlogs(response.data.posts || []);
         setHasMore(response.data.hasMore);
 
-        // Update URL params only if changed
-        if (Number(searchParams.get('page')) !== currentPage) {
-          searchParams.set('page', String(currentPage));
-          searchParams.set('limit', String(limit));
-        }
-        searchParams.set('searchQuery', options.searchQuery);
-        searchParams.set('categories', options.categories!);
-        searchParams.set('filterByDeleted', String(options.filterByDeleted));
-        searchParams.set(
-          'filterByPublished',
-          String(options.filterByPublished)
-        );
-        setSearchParams(searchParams);
+        // Update search params
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set('page', String(currentPage));
+        newParams.set('limit', String(limit));
+        newParams.set('searchQuery', options.searchQuery);
+        newParams.set('categories', options.categories);
+        newParams.set('filterByDeleted', String(options.filterByDeleted));
+        newParams.set('filterByPublished', String(options.filterByPublished));
+
+        setSearchParams(newParams);
       }
     } catch (error) {
       toast.error(
@@ -72,14 +63,14 @@ const BlogListPage = () => {
           ? error.response.data.error
           : 'Something went wrong!'
       );
-      console.error(error);
+      console.error('Fetch error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOnLoad = () => {
-    if (hasMore) {
+    if (hasMore && !isLoading) {
       setPage((prevPage) => prevPage + 1);
     }
   };
@@ -111,7 +102,7 @@ const BlogListPage = () => {
               {hasMore ? (
                 <button
                   onClick={handleOnLoad}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                  className="bg-[#2c586a] hover:bg-[#2c586a] text-white font-bold py-2 px-4 rounded-full"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Loading...' : 'Load more'}

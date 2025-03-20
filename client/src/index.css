@@ -53,6 +53,15 @@ body {
   text-align: justify;
 }
 
+.prose-lg h1, 
+.prose-lg h2,
+.prose-lg h3,
+.prose-lg h4,
+.prose-lg h5,
+.prose-lg h6{
+  color: #2c586a;
+}
+
 .prose-lg{
   margin: 0 !important;
   padding: 0 !important;

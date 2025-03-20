@@ -3,7 +3,7 @@ import PageWrapper from '../components/PageWrapper';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
 import { categories } from '../helper';
@@ -23,8 +23,7 @@ const EditBlogPage = () => {
 
   const quillRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
-  const slug = location.pathname.split('/').pop();
+  const { slug } = useParams();
 
   useEffect(() => {
     const fetchBlog = async () => {

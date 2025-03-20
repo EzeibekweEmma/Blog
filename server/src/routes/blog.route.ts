@@ -146,7 +146,7 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
  */
 router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
+    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 18;
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
     const skip = (page - 1) * limit;
     const sort = req.query.sort?.toString().toLowerCase() === "newest" ? -1 : 1;
@@ -167,7 +167,10 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
       .skip(skip)
       .select('_id title description image slug createdAt isFeatured')
 
-    return res.status(200).json({ posts, hasMore: posts.length === limit });
+    const totalPosts = await BlogPost.countDocuments(option);
+    const hasMore = Math.ceil(totalPosts / limit) > page;
+
+    return res.status(200).json({ posts, limit: limit, page: page, hasMore });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -198,25 +201,29 @@ router.get('/all/:slug', Authentication, async (req: Request, res: Response): Pr
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
   try {
-    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 15;
+    const limit = Number(req.query.limit) > 0 ? Number(req.query.limit) : 18;
     const page = Number(req.query.page) > 0 ? Number(req.query.page) : 1;
     const skip = (page - 1) * limit;
     const categories = req.query.categories?.toString().trim().toLowerCase() || undefined;
     const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
 
     const option: Record<string, any> = { isDeleted: false, isPublished: true, };
-    if (categories) option.categories = { $in: [categories] };
+    if (categories && categories.toLowerCase() !== 'general') option.categories = { $in: [categories] };
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
     const posts = await BlogPost.find(option)
-      .sort({ createdAt: -1 }).limit(limit).skip(skip).select('_id title description image slug createdAt isFeatured');
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip)
+      .select('_id title description image slug createdAt isFeatured')
+
     if (!posts) {
       return res.status(400).json({ error: 'Error fetching blog posts' });
     }
 
-    const totalPosts = await BlogPost.countDocuments({ isDeleted: false, isPublished: true });
-    const hasMore = totalPosts > skip + posts.length;
-    console.log(hasMore)
+    const totalPosts = await BlogPost.countDocuments(option);
+    const hasMore = Math.ceil(totalPosts / limit) > page;
+
     return res.status(200).json({ posts, limit: limit, page: page, hasMore });
   } catch (err) {
     console.error(err)
@@ -232,7 +239,8 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
 router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
   try {
     const blog = await BlogPost.findOne({ slug: req.params.slug, isDeleted: false, isPublished: true });
-    if (!blog || blog.isDeleted) {
+
+    if (!blog) {
       return res.status(404).json({ error: 'Blog not found' });
     }
 

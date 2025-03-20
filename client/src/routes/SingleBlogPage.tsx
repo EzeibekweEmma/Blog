@@ -6,7 +6,7 @@ import PageWrapper from '../components/PageWrapper';
 import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
 import { formatDate } from '../utils';
-import Aside from '../components/Aside';
+import { HiHashtag } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
 import { IoTrashBinOutline } from 'react-icons/io5';
 import { FiEdit } from 'react-icons/fi';
@@ -116,14 +116,28 @@ const SingleBlogView = () => {
         <img
           src={blog.image}
           alt="Blog Cover"
-          className="mb-6 w-full h-[80vh] rounded-lg shadow-md object-cover object-center"
+          className="mb-6 md:mb-10 w-full max-h-[67vh] rounded-lg shadow-md object-cover object-center"
         />
-        <div className="flex gap-5 lg:flex-row flex-col">
+        <div className="flex flex-col justify-center gap-5">
           <div
-            className="prose prose-lg text-wrap prose-p:text-justify md:flex-[0.9]"
+            className="prose prose-lg text-wrap prose-p:text-justify w-[90vw] md:max-w-[75vw] lg:max-w-[60vw]"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
-          <Aside />
+          <div className="flex flex-wrap gap-2">
+            {blog.categories.length > 1 &&
+              blog.categories.map((category) => (
+                <>
+                  <Link
+                    to={`/blogs?categories=${category}`}
+                    key={category}
+                    className="text-[#2c586a] text-sm font-medium hover:border-b-2 border-[#2c586a] transition-all ease-in-out flex gap-0.5 items-center"
+                  >
+                    <HiHashtag />
+                    <span>{category}</span>
+                  </Link>
+                </>
+              ))}
+          </div>
         </div>
       </div>
     </PageWrapper>
