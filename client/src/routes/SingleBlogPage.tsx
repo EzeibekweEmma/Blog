@@ -68,7 +68,7 @@ const SingleBlogView = () => {
   };
 
   if (isLoading) return <p className="text-center mt-10">Loading...</p>;
-  if (!blog) return <p className="text-center mt-10">No blog found</p>;
+  if (!blog) return;
 
   // Sanitize content before rendering
   const sanitizedContent = DOMPurify.sanitize(blog.content);
@@ -111,22 +111,22 @@ const SingleBlogView = () => {
           <span className="text-sm">•</span>
           <span>By John</span>
         </div>
-        <h1 className="text-3xl font-bold text-[#2c586a] my-2">{blog.title}</h1>
+        <h1 className="text-4xl font-bold text-[#2c586a] my-2">{blog.title}</h1>
         <p className="mb-5">{blog.description}</p>
         <img
           src={blog.image}
           alt="Blog Cover"
           className="mb-6 md:mb-10 w-full max-h-[67vh] rounded-lg shadow-md object-cover object-center"
         />
-        <div className="flex flex-col justify-center gap-5">
-          <div
-            className="prose prose-lg text-wrap prose-p:text-justify w-[90vw] md:max-w-[75vw] lg:max-w-[60vw]"
-            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-          />
-          <div className="flex flex-wrap gap-2">
-            {blog.categories.length > 1 &&
-              blog.categories.map((category) => (
-                <>
+        <div className="flex flex-col items-center gap-5">
+          <div>
+            <div
+              className="prose prose-lg text-wrap prose-p:text-justify w-[90vw] md:max-w-[75vw] lg:max-w-[60vw]"
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+            />
+            <div className="flex flex-wrap gap-2">
+              {blog.categories.length > 1 &&
+                blog.categories.map((category) => (
                   <Link
                     to={`/blogs?categories=${category}`}
                     key={category}
@@ -135,8 +135,8 @@ const SingleBlogView = () => {
                     <HiHashtag />
                     <span>{category}</span>
                   </Link>
-                </>
-              ))}
+                ))}
+            </div>
           </div>
         </div>
       </div>
