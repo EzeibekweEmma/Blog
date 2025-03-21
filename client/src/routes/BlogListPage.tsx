@@ -111,10 +111,13 @@ const BlogListPage = () => {
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-              {blogs.map((blog, index) => (
-                <div key={index}>
-                  <BlogCard isFeatured blog={blog} setBlogs={setBlogs} />
-                </div>
+              {blogs.map((blog) => (
+                <BlogCard
+                  isFeatured
+                  blog={blog}
+                  setBlogs={setBlogs}
+                  key={blog.slug}
+                />
               ))}
             </div>
             <div className="text-center mt-4">

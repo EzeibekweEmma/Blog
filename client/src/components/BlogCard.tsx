@@ -73,7 +73,7 @@ const BlogCard = ({
       className={`bg-white rounded-lg shadow-lg relative hover:shadow-xl transition-all ease-in-out transform hover:-translate-y-1
          ${
            isFeatured
-             ? 'p-4 h-full max-w-[450px]'
+             ? 'p-4 h-full w-full sm:max-w-[450px]'
              : 'sm:flex sm:gap-3 p-4 sm:p-2 sm:justify-between sm:items-center'
          }`}
     >
