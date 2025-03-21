@@ -57,7 +57,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex justify-center bg-[#2c586a] text-[#f3f8f6]">
+    <nav className="flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50">
       <div className="w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]">
         <div className="w-full h-16 md:h-20 flex items-center justify-between">
           {/* LOGO */}
@@ -96,9 +96,9 @@ const Navbar = () => {
             </div>
             {/* MOBILE LINK LIST */}
             <div
-              className={`w-full h-screen bg-[#2c586a] flex flex-col items-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out pt-20 z-50 ${
-                isOpen ? '-right-0' : '-right-[100%]'
-              }`}
+              className={`w-full h-full bg-[#2c586a] flex flex-col items-center gap-8 left-0 font-medium text-lg absolute transition-all ease-in-out pt-20 z-40 
+                ${isOpen ? 'top-16' : '-top-[100%]'}
+                `}
             >
               {navList.map((navItem, index) => (
                 <Link
