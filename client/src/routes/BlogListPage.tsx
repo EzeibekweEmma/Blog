@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import MainCategories from '../components/MainCategories';
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { API_URL } from '../main';
 import { IBlogPost } from '../interface';
+import FeaturedPosts from '../components/FeaturedPosts';
 
 const BlogListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,6 +29,15 @@ const BlogListPage = () => {
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
+
+  const checkOptions =
+    options.categories !== 'General' ||
+    options.searchQuery !== '' ||
+    options.filterByDeleted ||
+    options.filterByPublished ||
+    page !== 1
+      ? false
+      : true;
 
   useEffect(() => {
     fetchBlogs(page);
@@ -75,6 +85,8 @@ const BlogListPage = () => {
     }
   };
 
+  const featuredBlog = blogs.filter((b) => b.isFeatured === true);
+
   return (
     <PageWrapper>
       <div>
@@ -91,7 +103,14 @@ const BlogListPage = () => {
           </div>
         ) : blogs.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 mt-8">
+            {checkOptions && (
+              <>
+                <FeaturedPosts blog={featuredBlog} setBlogs={setBlogs} />
+                <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
+              </>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
               {blogs.map((blog, index) => (
                 <div key={index}>
                   <BlogCard isFeatured blog={blog} setBlogs={setBlogs} />
