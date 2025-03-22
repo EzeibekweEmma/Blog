@@ -1,13 +1,7 @@
-import Cookies from 'js-cookie';
 import { IOptionProps } from '../interface';
 import { useEffect, useState } from 'react';
+import Filter from './Filter';
 
-interface UserState {
-  userDetails: string;
-}
-interface HandleKeyPressEvent extends React.KeyboardEvent<HTMLInputElement> {
-  target: HTMLInputElement;
-}
 const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -25,12 +19,13 @@ const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
     setSearchQuery(e.target.value);
   };
 
-  const userState: UserState | null = Cookies.get('userDetails')
-    ? JSON.parse(Cookies.get('userDetails') || '{}')
-    : null;
-
   return (
     <div className="w-full lg:w-fit relative">
+      <Filter
+        options={options}
+        setOptions={setOptions}
+        style="-top-10 md:hidden"
+      />
       <div className="bg-[#e6edf0] p-1.5 rounded-full flex items-center gap-2 w-full lg:w-fit">
         <div className="p-1.5 rounded-full bg-[#f3f8f6]">
           <svg
