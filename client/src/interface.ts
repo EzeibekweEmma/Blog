@@ -13,6 +13,9 @@ export interface IPost {
   isDeleted?: boolean;
   deletedAt?: Date;
   createdAt: Date;
+  user: {
+    name: string;
+  }
 }
 
 export interface IOptionProps {

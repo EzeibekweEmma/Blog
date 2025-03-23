@@ -115,7 +115,7 @@ const SingleBlogPage = () => {
         <div className="flex font-medium text-[#2c586a] items-center text-sm gap-1.5">
           <span>{formatDate(blog.createdAt)}</span>
           <span className="text-sm">•</span>
-          <span>By John</span>
+          <span>By {blog.user.name}</span>
         </div>
         <h1 className="text-4xl font-bold text-[#2c586a] my-2">{blog.title}</h1>
         <p className="mb-5">{blog.description}</p>

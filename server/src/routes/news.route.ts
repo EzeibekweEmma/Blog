@@ -165,7 +165,7 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
       .sort({ createdAt: sort })
       .limit(limit)
       .skip(skip)
-      .populate('user', 'name email')
+      .populate('user', 'name')
       .select('_id title description image slug createdAt isFeatured isDeleted isPublished')
 
     const totalPosts = await NewsPost.countDocuments(option);

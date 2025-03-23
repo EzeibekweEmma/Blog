@@ -22,7 +22,7 @@ const Card = ({
   setPost: (posts: IPost[]) => void;
 }) => {
   const location = useLocation();
-  const path = location.pathname.includes('/blog') ? 'blog' : 'news';
+  const path = location.pathname.includes('/blog') ? 'blogs' : 'news';
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -78,7 +78,8 @@ const Card = ({
     >
       {userState && location.pathname !== '/' && (
         <div className="absolute top-5 right-5 flex gap-1.5">
-          {(!post.isDeleted || !post.isPublished) &&
+          {!post.isDeleted &&
+            post.isPublished &&
             (post.isFeatured ? (
               <button onClick={() => handleChange(false, 'handleIsFeatured')}>
                 <IoHeartSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
@@ -109,7 +110,7 @@ const Card = ({
       </div> */}
 
       {/* image */}
-      <Link to={`/posts/${post.slug}`} className="sm:flex-[0.4]">
+      <Link to={`/${path}/${post.slug}`} className="sm:flex-[0.4]">
         <img
           src={post.image}
           alt={post.title}
@@ -121,7 +122,7 @@ const Card = ({
 
       <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0 sm:flex-1'}>
         <Link
-          to={`/posts/${post.slug}`}
+          to={`/${path}/${post.slug}`}
           className="text-lg font-semibold text-[#2c586a] hover:underline"
         >
           {post.title}
@@ -133,14 +134,14 @@ const Card = ({
               : post.description}
           </span>
           <Link
-            to={`/posts/${post.slug}`}
+            to={`/${path}/${post.slug}`}
             className="text-sm text-[#2c586a] hover:underline ml-2"
           >
             Read more
           </Link>
         </p>
         <div className="flex items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
-          <span>By John</span>
+          <span>By {post.user.name}</span>
           <span className="text-sm">•</span>
           <span>{getDaysAgo(post.createdAt)}</span>
         </div>
