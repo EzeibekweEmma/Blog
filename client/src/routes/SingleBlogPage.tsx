@@ -12,7 +12,7 @@ import { IoTrashBinOutline } from 'react-icons/io5';
 import { FiEdit } from 'react-icons/fi';
 import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import PostLoadingState from '../components/PostLoadingState';
 
 const SingleBlogPage = () => {
   const { slug } = useParams();
@@ -68,12 +68,7 @@ const SingleBlogPage = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="h-[80vh] w-full flex justify-center items-center  text-[#2c586a]">
-        <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
-      </div>
-    );
+  if (isLoading) return <PostLoadingState />;
   if (!blog) return;
 
   // Sanitize content before rendering

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { IPost } from '../interface';
-import { getDaysAgo } from '../utils';
+import { formatNumber, getDaysAgo } from '../utils';
 import {
   IoHeartOutline,
   IoHeartSharp,
@@ -155,7 +155,7 @@ const Card = ({
           </div>
           <div className="flex gap-1.5 items-center">
             <FaRegEye />
-            <span>{post.visit}</span>
+            <span>{formatNumber(post.visit!)}</span>
           </div>
         </div>
       </div>

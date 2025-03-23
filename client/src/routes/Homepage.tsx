@@ -44,23 +44,26 @@ const Homepage = () => {
     <PageWrapper>
       <div className="flex flex-col gap-4">
         {/* INTRODUCTION */}
-        <div className="flex items-center justify-between md:mb-5 border-b border-[#2c586a]/60 pb-10">
-          <div>
-            <h1
-              className="text-[#2c586a] text-2xl md:text-5xl lg:text-6xl font-bold max-w-4xl"
-              style={{ lineHeight: '1.3' }}
-            >
-              Welcome To Empire Report Where Adventure Meets Awareness.
-            </h1>
-            <p className="mt-5 sm:mt-10 text-sm sm:text-base md:text-xl max-w-4xl">
-              At Empire Report, we bring you the best of both worlds—captivating
-              travel experiences and the latest global news. Whether you're an
-              avid traveler, a digital nomad, or simply curious about the world,
-              we’ve got you covered.
-            </p>
-          </div>
+        <div>
+          <div className="flex items-center justify-between md:mb-5">
+            <div>
+              <h1
+                className="text-[#2c586a] text-2xl md:text-5xl lg:text-6xl font-bold max-w-4xl"
+                style={{ lineHeight: '1.3' }}
+              >
+                Welcome To Empire Report Where Adventure Meets Awareness.
+              </h1>
+              <p className="mt-5 sm:mt-10 text-sm sm:text-base md:text-xl max-w-4xl">
+                At Empire Report, we bring you the best of both
+                worlds—captivating travel experiences and the latest global
+                news. Whether you're an avid traveler, a digital nomad, or
+                simply curious about the world, we’ve got you covered.
+              </p>
+            </div>
 
-          <HeroIcon />
+            <HeroIcon />
+          </div>
+          <WhatWeOffer />
         </div>
 
         <div>
@@ -78,10 +81,8 @@ const Homepage = () => {
             </div>
           )}
 
-          <WhatWeOffer />
-
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
               {[...Array(3)].map((_, i) => (
                 <EmptyCard isFeatured key={i} />
               ))}
