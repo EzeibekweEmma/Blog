@@ -55,8 +55,8 @@ router.put('/edit/:slug', Authentication, async (req: Request, res: Response): P
     }
 
     if (field.isFeatured) {
-      if (existingPost.isDeleted) {
-        return res.status(400).json({ error: "Can't feature a deleted news" });
+      if (existingPost.isDeleted || existingPost.isPublished === false) {
+        return res.status(400).json({ error: "Can't feature a deleted or unpublished post" });
       }
 
       const checkFeatured = await NewsPost.countDocuments({ isFeatured: true });
@@ -166,7 +166,7 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
       .limit(limit)
       .skip(skip)
       .populate('user', 'name email')
-      .select('_id title description image slug createdAt isFeatured isDeleted')
+      .select('_id title description image slug createdAt isFeatured isDeleted isPublished')
 
     const totalPosts = await NewsPost.countDocuments(option);
     const hasMore = Math.ceil(totalPosts / limit) > page;

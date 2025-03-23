@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import MainCategories from '../components/MainCategories';
-import BlogCard from '../components/BlogCard';
-import BlogCardEmpty from '../components/BlogCardEmptyState';
+import Card from '../components/Card';
+import EmptyCard from '../components/EmptyCardState';
 import Search from '../components/Search';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -107,24 +107,24 @@ const BlogListPage = () => {
         {isLoading && blogs.length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
             {[...Array(6)].map((_, i) => (
-              <BlogCardEmpty isFeatured key={i} />
+              <EmptyCard isFeatured key={i} />
             ))}
           </div>
         ) : blogs.length > 0 ? (
           <>
             {checkOptions && (
               <>
-                <FeaturedPosts blog={featuredBlog} setBlogs={setBlogs} />
+                <FeaturedPosts post={featuredBlog} setPost={setBlogs} />
                 <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
               </>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
               {blogs.map((blog) => (
-                <BlogCard
+                <Card
                   isFeatured
-                  blog={blog}
-                  setBlogs={setBlogs}
+                  post={blog}
+                  setPost={setBlogs}
                   key={blog.slug}
                 />
               ))}

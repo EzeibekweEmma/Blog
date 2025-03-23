@@ -12,16 +12,17 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../main';
 
-const BlogCard = ({
+const Card = ({
   isFeatured,
-  blog,
-  setBlogs,
+  post,
+  setPost,
 }: {
   isFeatured?: boolean;
-  blog: IPost;
-  setBlogs: (blogs: IPost[]) => void;
+  post: IPost;
+  setPost: (posts: IPost[]) => void;
 }) => {
   const location = useLocation();
+  const path = location.pathname.includes('/blog') ? 'blog' : 'news';
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -34,9 +35,9 @@ const BlogCard = ({
       const endpoint =
         action === 'handleDelete'
           ? option
-            ? `${API_URL}/blogs/delete/${blog.slug}`
-            : `${API_URL}/blogs/restore/${blog.slug}`
-          : `${API_URL}/blogs/edit/${blog.slug}`;
+            ? `${API_URL}/${path}/delete/${post.slug}`
+            : `${API_URL}/${path}/restore/${post.slug}`
+          : `${API_URL}/${path}/edit/${post.slug}`;
 
       const method =
         action === 'handleIsFeatured' ? 'put' : option ? 'delete' : 'patch';
@@ -47,13 +48,13 @@ const BlogCard = ({
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
 
-        const updateBlog =
+        const updatePost =
           action === 'handleIsFeatured'
-            ? { ...blog, isFeatured: option }
-            : { ...blog, isDeleted: option, isFeatured: false };
+            ? { ...post, isFeatured: option }
+            : { ...post, isDeleted: option, isFeatured: false };
 
-        setBlogs((prevBlogs: IPost[]) =>
-          prevBlogs.map((b: IPost) => (b.slug === blog.slug ? updateBlog : b))
+        setPost((prevPosts: IPost[]) =>
+          prevPosts.map((b: IPost) => (b.slug === post.slug ? updatePost : b))
         );
       }
     } catch (error) {
@@ -62,7 +63,7 @@ const BlogCard = ({
       } else {
         toast.error('Something went wrong!');
       }
-      console.error('Error deleting blog:', error);
+      console.error('Error deleting post:', error);
     }
   };
 
@@ -77,8 +78,8 @@ const BlogCard = ({
     >
       {userState && location.pathname !== '/' && (
         <div className="absolute top-5 right-5 flex gap-1.5">
-          {!blog.isDeleted &&
-            (blog.isFeatured ? (
+          {(!post.isDeleted || !post.isPublished) &&
+            (post.isFeatured ? (
               <button onClick={() => handleChange(false, 'handleIsFeatured')}>
                 <IoHeartSharp className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
               </button>
@@ -87,7 +88,7 @@ const BlogCard = ({
                 <IoHeartOutline className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70 stroke-2" />
               </button>
             ))}
-          {blog.isDeleted ? (
+          {post.isDeleted ? (
             <button onClick={() => handleChange(false, 'handleDelete')}>
               <MdSettingsBackupRestore className="text-2xl bg-[#f3f8f6] h-7 w-7 p-1 text-[#2c586a] rounded-full hover:bg-[#f3f8f6]/70" />
             </button>
@@ -108,10 +109,10 @@ const BlogCard = ({
       </div> */}
 
       {/* image */}
-      <Link to={`/blogs/${blog.slug}`} className="sm:flex-[0.4]">
+      <Link to={`/posts/${post.slug}`} className="sm:flex-[0.4]">
         <img
-          src={blog.image}
-          alt={blog.title}
+          src={post.image}
+          alt={post.title}
           className={`object-cover object-center rounded-lg h-52 ${
             isFeatured ? 'w-full' : 'sm:h-40 sm:w-48 w-full'
           }`}
@@ -120,19 +121,19 @@ const BlogCard = ({
 
       <div className={isFeatured ? 'mt-4' : 'mt-4 sm:mt-0 sm:flex-1'}>
         <Link
-          to={`/blogs/${blog.slug}`}
+          to={`/posts/${post.slug}`}
           className="text-lg font-semibold text-[#2c586a] hover:underline"
         >
-          {blog.title}
+          {post.title}
         </Link>
         <p className="text-sm mt-3">
           <span>
-            {blog.description.length > 120
-              ? blog.description.slice(0, 120) + '...'
-              : blog.description}
+            {post.description.length > 120
+              ? post.description.slice(0, 120) + '...'
+              : post.description}
           </span>
           <Link
-            to={`/blogs/${blog.slug}`}
+            to={`/posts/${post.slug}`}
             className="text-sm text-[#2c586a] hover:underline ml-2"
           >
             Read more
@@ -141,11 +142,11 @@ const BlogCard = ({
         <div className="flex items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
           <span>By John</span>
           <span className="text-sm">•</span>
-          <span>{getDaysAgo(blog.createdAt)}</span>
+          <span>{getDaysAgo(post.createdAt)}</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default BlogCard;
+export default Card;

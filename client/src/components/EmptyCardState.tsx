@@ -1,4 +1,4 @@
-const BlogCardEmpty = ({ isFeatured }: { isFeatured?: boolean }) => {
+const EmptyCard = ({ isFeatured }: { isFeatured?: boolean }) => {
   return (
     <div
       className={`bg-white rounded-lg shadow-lg animate-pulse ${
@@ -31,4 +31,4 @@ const BlogCardEmpty = ({ isFeatured }: { isFeatured?: boolean }) => {
   );
 };
 
-export default BlogCardEmpty;
+export default EmptyCard;

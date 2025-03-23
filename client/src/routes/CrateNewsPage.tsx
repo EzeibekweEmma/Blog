@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
-import { categories } from '../helper';
+import { newsCategories } from '../helper';
 
 const CreateNewsPage = () => {
   const [content, setContent] = useState('');
@@ -208,7 +208,7 @@ const CreateNewsPage = () => {
             <div className="flex flex-col gap-2 flex-1">
               <label className="text-sm font-medium">Choose categories:</label>
               <div className="flex flex-wrap md:grid grid-cols-2 lg:grid-cols-3 gap-2">
-                {categories.map((categories) => (
+                {newsCategories.map((categories) => (
                   <label
                     key={categories}
                     className="flex items-center gap-2 cursor-pointer"

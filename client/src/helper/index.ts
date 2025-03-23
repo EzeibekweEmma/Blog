@@ -1,4 +1,4 @@
-export const categories = [
+export const blogCategories = [
   'Web Design',
   'Development',
   'Database',

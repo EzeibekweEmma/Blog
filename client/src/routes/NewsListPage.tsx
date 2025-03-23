@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import MainCategories from '../components/MainCategories';
-import BlogCard from '../components/BlogCard';
-import BlogCardEmpty from '../components/BlogCardEmptyState';
+import Card from '../components/Card';
+import EmptyCard from '../components/EmptyCardState';
 import Search from '../components/Search';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import FeaturedPosts from '../components/FeaturedPosts';
 
 const NewsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [blogs, setBlogs] = useState<IPost[]>([]);
+  const [news, setNews] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
@@ -48,20 +48,20 @@ const NewsListPage = () => {
       : true;
 
   useEffect(() => {
-    fetchBlogs(page);
+    fetchNews(page);
   }, [page, JSON.stringify(options)]);
 
-  const fetchBlogs = async (currentPage: number) => {
+  const fetchNews = async (currentPage: number) => {
     setIsLoading(true);
     try {
       const response = await axios.get(
         userState
-          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&categories=${options.categories}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}&sort=${options.sort}`
-          : `${API_URL}/blogs?limit=${limit}&page=${currentPage}&categories=${options.categories}&searchQuery=${options.searchQuery}`
+          ? `${API_URL}/news/all?limit=${limit}&page=${currentPage}&categories=${options.categories}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}&sort=${options.sort}`
+          : `${API_URL}/news?limit=${limit}&page=${currentPage}&categories=${options.categories}&searchQuery=${options.searchQuery}`
       );
 
       if (response.status.toString().startsWith('2')) {
-        setBlogs(response.data.posts || []);
+        setNews(response.data.posts || []);
         setHasMore(response.data.hasMore);
 
         // Update search params
@@ -94,7 +94,7 @@ const NewsListPage = () => {
     }
   };
 
-  const featuredBlog = blogs.filter((b) => b.isFeatured === true);
+  const featuredNews = news.filter((b) => b.isFeatured === true);
 
   return (
     <PageWrapper>
@@ -104,28 +104,28 @@ const NewsListPage = () => {
           <Search setOptions={setOptions} options={options} />
         </span>
 
-        {isLoading && blogs.length === 0 ? (
+        {isLoading && news.length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
             {[...Array(6)].map((_, i) => (
-              <BlogCardEmpty isFeatured key={i} />
+              <EmptyCard isFeatured key={i} />
             ))}
           </div>
-        ) : blogs.length > 0 ? (
+        ) : news.length > 0 ? (
           <>
             {checkOptions && (
               <>
-                <FeaturedPosts blog={featuredBlog} setBlogs={setBlogs} />
-                <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
+                <FeaturedPosts post={featuredNews} setPost={setNews} />
+                <h1 className="mt-8 text-2xl text-gray-600">Recent News</h1>
               </>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
-              {blogs.map((blog) => (
-                <BlogCard
+              {news.map((News) => (
+                <Card
                   isFeatured
-                  blog={blog}
-                  setBlogs={setBlogs}
-                  key={blog.slug}
+                  post={News}
+                  setPost={setNews}
+                  key={News.slug}
                 />
               ))}
             </div>
@@ -139,13 +139,13 @@ const NewsListPage = () => {
                   {isLoading ? 'Loading...' : 'Load more'}
                 </button>
               ) : (
-                <p className="text-gray-500">No more blogs available.</p>
+                <p className="text-gray-500">No more news available.</p>
               )}
             </div>
           </>
         ) : (
           <div className="flex justify-center items-center h-[50vh]">
-            <h1 className="text-2xl text-gray-600">No blogs found</h1>
+            <h1 className="text-2xl text-gray-600">No news found</h1>
           </div>
         )}
       </div>

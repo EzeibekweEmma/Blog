@@ -1,31 +1,31 @@
 import { IPost } from '../interface';
-import BlogCard from './BlogCard';
+import Card from './Card';
 
 const FeaturedPosts = (props: {
-  blog: IPost[];
-  setBlogs: (blogs: IPost[]) => void;
+  post: IPost[];
+  setPost: (post: IPost[]) => void;
 }) => {
-  const { blog } = props;
+  const { post } = props;
 
-  function setBlogs(blogs: IPost[]): void {
-    props.setBlogs(blogs);
+  function setPost(post: IPost[]): void {
+    props.setPost(post);
   }
   return (
-    blog.length > 0 && (
+    post.length > 0 && (
       <div className="pt-4 flex flex-col md:flex-row gap-4 w-full justify-between">
         <div className="flex-[0.8] md:flex hidden">
-          <BlogCard isFeatured blog={blog[0]} setBlogs={setBlogs} />
+          <Card isFeatured post={post[0]} setPost={setPost} />
         </div>
         <div className="flex-1 md:hidden">
-          <BlogCard blog={blog[0]} setBlogs={setBlogs} />
+          <Card post={post[0]} setPost={setPost} />
         </div>
-        {blog.length > 1 && (
+        {post.length > 1 && (
           <div className="flex-1 flex gap-4 flex-col justify-between">
-            {blog.slice(1).map((blog, index) => {
+            {post.slice(1).map((post, index) => {
               if (index < 2)
                 return (
                   <div key={index} className="">
-                    <BlogCard blog={blog} setBlogs={setBlogs} />
+                    <Card post={post} setPost={setPost} />
                   </div>
                 );
             })}

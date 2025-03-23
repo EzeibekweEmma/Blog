@@ -3,22 +3,25 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../main';
 import { toast } from 'react-toastify';
-import BlogCardEmpty from '../components/BlogCardEmptyState';
+import EmptyCard from '../components/EmptyCardState';
 import RecentPosts from '../components/RecentPosts';
 import HeroIcon from '../components/HeroIcon';
 import WhatWeOffer from '../components/Offer';
 
 const Homepage = () => {
   const [blogs, setBlogs] = useState([]);
+  const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get(`${API_URL}/blogs`);
-
-        const posts = response.data?.posts || [];
-        setBlogs(posts);
+        const blogResponse = await axios.get(`${API_URL}/blogs`);
+        const newsResponse = await axios.get(`${API_URL}/news`);
+        const blogs = blogResponse.data?.posts || [];
+        const news = newsResponse.data?.posts || [];
+        setBlogs(blogs);
+        setNews(news);
       } catch (error) {
         if (
           axios.isAxiosError(error) &&
@@ -64,11 +67,11 @@ const Homepage = () => {
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(3)].map((_, i) => (
-                <BlogCardEmpty isFeatured key={i} />
+                <EmptyCard isFeatured key={i} />
               ))}
             </div>
           ) : blogs.length > 0 ? (
-            <RecentPosts blog={blogs} title="Blogs" />
+            <RecentPosts post={blogs} title="Blogs" />
           ) : (
             <div className="flex justify-center items-center h-[50vh]">
               <h1 className="text-2xl text-gray-600">No blogs found</h1>
@@ -80,11 +83,11 @@ const Homepage = () => {
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(3)].map((_, i) => (
-                <BlogCardEmpty isFeatured key={i} />
+                <EmptyCard isFeatured key={i} />
               ))}
             </div>
-          ) : blogs.length > 0 ? (
-            <RecentPosts blog={blogs} title="News" />
+          ) : news.length > 0 ? (
+            <RecentPosts post={news} title="News" />
           ) : (
             <div className="flex justify-center items-center h-[50vh]">
               <h1 className="text-2xl text-gray-600">No News found</h1>

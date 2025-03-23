@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 import { IPost } from '../interface';
-import BlogCard from './BlogCard';
+import Card from './Card';
 
-const RecentPosts = (props: { blog: IPost[]; title: string }) => {
-  const { blog, title } = props;
+const RecentPosts = (props: { post: IPost[]; title: string }) => {
+  const { post, title } = props;
 
   return (
-    blog.length > 0 && (
+    post.length > 0 && (
       <div>
         <h1 className="mt-8 mb-4 text-2xl text-gray-600">Recent {title}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {blog.map((blog, index) => (
+          {post.map((post, index) => (
             <div key={index}>
-              <BlogCard isFeatured blog={blog} />
+              <Card isFeatured post={post} />
             </div>
           ))}
         </div>

@@ -1,13 +1,16 @@
 import { useLocation } from 'react-router-dom';
 import Search from './Search';
 import { IOptionProps } from '../interface';
-import { categories } from '../helper';
+import { newsCategories, blogCategories } from '../helper';
 import Filter from './Filter';
 
 const MainCategories: React.FC<IOptionProps> = ({ setOptions, options }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const urlCategories = searchParams.get('categories') || 'General';
+  const categories = location.pathname.includes('/blog')
+    ? blogCategories
+    : newsCategories;
 
   return (
     <div className="relative hidden md:flex flex-col lg:flex-row bg-white rounded-3xl xl:rounded-full h-14 px-8 shadow-lg items-center justify-center lg:gap-8 mb-4 lg:mb-0">
