@@ -145,7 +145,7 @@ const Filter: React.FC<IOptionProps & { style?: string }> = ({
                 <label className="cursor-pointer">
                   <input
                     type="radio"
-                    name="deleted"
+                    name="published"
                     value="all"
                     className="hidden"
                     onChange={() =>

@@ -157,8 +157,8 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
 
     const option: Record<string, any> = {};
     if (categories && categories.toLowerCase() !== 'general') option.categories = { $in: [categories] };
-    if (typeof filterByDeleted === 'boolean') option.isDeleted = filterByDeleted;
-    if (typeof filterByPublished === 'boolean') option.isPublished = filterByPublished;
+    if (filterByDeleted === 'true' || filterByDeleted === 'false') option.isDeleted = filterByDeleted === 'true';
+    if (filterByPublished === 'true' || filterByPublished === 'false') option.isPublished = filterByPublished === 'true';
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
     const posts = await BlogPost.find(option)

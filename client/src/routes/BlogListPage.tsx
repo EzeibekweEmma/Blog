@@ -40,8 +40,9 @@ const BlogListPage = () => {
   const checkOptions =
     options.categories !== 'General' ||
     options.searchQuery !== '' ||
-    options.filterByDeleted ||
-    options.filterByPublished ||
+    options.filterByDeleted !== 'both' ||
+    options.filterByPublished !== 'both' ||
+    options.sort !== 'newest' ||
     page !== 1
       ? false
       : true;
