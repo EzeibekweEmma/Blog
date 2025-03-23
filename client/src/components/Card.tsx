@@ -11,18 +11,25 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../main';
+import { FaRegEye } from 'react-icons/fa';
 
 const Card = ({
   isFeatured,
   post,
   setPost,
+  type,
 }: {
   isFeatured?: boolean;
   post: IPost;
-  setPost: (posts: IPost[]) => void;
+  setPost?: (posts: IPost[]) => void;
+  type?: 'blogs' | 'news';
 }) => {
   const location = useLocation();
-  const path = location.pathname.includes('/blog') ? 'blogs' : 'news';
+  const path = type
+    ? type
+    : location.pathname.includes('/blog')
+    ? 'blogs'
+    : 'news';
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -140,10 +147,16 @@ const Card = ({
             Read more
           </Link>
         </p>
-        <div className="flex items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
-          <span>By {post.user.name}</span>
-          <span className="text-sm">•</span>
-          <span>{getDaysAgo(post.createdAt)}</span>
+        <div className="flex justify-between items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
+          <div>
+            <span>By {post.user.name}</span>
+            <span className="text-sm">•</span>
+            <span>{getDaysAgo(post.createdAt)}</span>
+          </div>
+          <div className="flex gap-1.5 items-center">
+            <FaRegEye />
+            <span>{post.visit}</span>
+          </div>
         </div>
       </div>
     </div>

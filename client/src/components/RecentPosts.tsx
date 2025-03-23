@@ -12,7 +12,7 @@ const RecentPosts = (props: { post: IPost[]; title: string }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {post.map((post, index) => (
             <div key={index}>
-              <Card isFeatured post={post} />
+              <Card isFeatured post={post} type={title.toLowerCase() as any} />
             </div>
           ))}
         </div>
