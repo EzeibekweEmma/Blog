@@ -18,11 +18,18 @@ const BlogListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-  const [options, setOptions] = useState({
+  const [options, setOptions] = useState<{
+    categories: string;
+    filterByDeleted: string | boolean;
+    filterByPublished: string | boolean;
+    searchQuery: string;
+    sort: string;
+  }>({
     categories: searchParams.get('categories') || 'General',
-    filterByDeleted: searchParams.get('filterByDeleted') === 'true',
-    filterByPublished: searchParams.get('filterByPublished') === 'true',
+    filterByDeleted: searchParams.get('filterByDeleted') || 'both',
+    filterByPublished: searchParams.get('filterByPublished') || 'both',
     searchQuery: searchParams.get('searchQuery') || '',
+    sort: searchParams.get('sort') || 'newest',
   });
 
   const limit = Number(searchParams.get('limit')) || 18;
@@ -48,7 +55,7 @@ const BlogListPage = () => {
     try {
       const response = await axios.get(
         userState
-          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&categories=${options.categories}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}`
+          ? `${API_URL}/blogs/all?limit=${limit}&page=${currentPage}&categories=${options.categories}&filterByDeleted=${options.filterByDeleted}&filterByPublished=${options.filterByPublished}&searchQuery=${options.searchQuery}&sort=${options.sort}`
           : `${API_URL}/blogs?limit=${limit}&page=${currentPage}&categories=${options.categories}&searchQuery=${options.searchQuery}`
       );
 
@@ -64,6 +71,7 @@ const BlogListPage = () => {
         newParams.set('categories', options.categories);
         newParams.set('filterByDeleted', String(options.filterByDeleted));
         newParams.set('filterByPublished', String(options.filterByPublished));
+        newParams.set('sort', options.sort);
 
         setSearchParams(newParams);
       }

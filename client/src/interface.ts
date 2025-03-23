@@ -19,15 +19,17 @@ export interface IOptionProps {
   setOptions: Dispatch<
     SetStateAction<{
       categories: string;
-      filterByDeleted: boolean;
-      filterByPublished: boolean;
+      filterByDeleted: boolean | string;
+      filterByPublished: boolean | string;
       searchQuery: string;
+      sort: string;
     }>
   >;
   options: {
     categories: string;
-    filterByDeleted: boolean;
-    filterByPublished: boolean;
+    filterByDeleted: boolean | string;
+    filterByPublished: boolean | string;
     searchQuery: string;
+    sort: string;
   };
 }

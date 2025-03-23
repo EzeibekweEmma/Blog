@@ -151,14 +151,14 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
     const skip = (page - 1) * limit;
     const sort = req.query.sort?.toString().toLowerCase() === "newest" ? -1 : 1;
     const categories = req.query.categories?.toString().trim().toLowerCase() || undefined;
-    const filterByDeleted = req.query.filterByDeleted === "true";
-    const filterByPublished = req.query.filterByPublished === "true";
+    const filterByDeleted = req.query.filterByDeleted || 'all';
+    const filterByPublished = req.query.filterByPublished || 'all';
     const searchQuery = req.query.searchQuery?.toString().trim().toLowerCase() || undefined;
 
     const option: Record<string, any> = {};
     if (categories && categories.toLowerCase() !== 'general') option.categories = { $in: [categories] };
-    if (filterByDeleted) option.isDeleted = true;
-    if (filterByPublished) option.isPublished = true;
+    if (typeof filterByDeleted === 'boolean') option.isDeleted = filterByDeleted;
+    if (typeof filterByPublished === 'boolean') option.isPublished = filterByPublished;
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
     const posts = await BlogPost.find(option)
