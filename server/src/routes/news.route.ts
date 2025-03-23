@@ -4,19 +4,19 @@ import { PostValidation, EditPostValidation } from '../utils/generalValidation';
 import { capitalize, generateUniqueSlug } from '../utils/helper';
 import { ZodError } from 'zod';
 import Authentication from '../middleware';
-import BlogPost from '../models/blog-post.model';
+import NewsPost from '../models/news-post.model';
 
 const router = express.Router();
 
 /**
  * @route POST /post
- * @desc Create a new blog post
+ * @desc Create a new news post
  * @access Private (Authenticated)
  */
 router.post('/post', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
     const field = PostValidation.parse(req.body);
-    const newPost = await BlogPost.create({
+    const newPost = await NewsPost.create({
       ...field,
       title: capitalize(field.title),
       slug: generateUniqueSlug(field.title),
@@ -24,15 +24,15 @@ router.post('/post', Authentication, async (req: Request, res: Response): Promis
     });
 
     if (!newPost) {
-      return res.status(400).json({ error: 'Failed to create blog' });
+      return res.status(400).json({ error: 'Failed to create news' });
     }
-    return res.status(201).json({ message: 'Blog created successfully', slug: newPost.slug });
+    return res.status(201).json({ message: 'News created successfully', slug: newPost.slug });
   } catch (err) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.errors[0].message });
     }
     if ((err as MongoServerError).code === 11000) {
-      return res.status(409).json({ error: `Blog with title: '${req.body.title}' already exists` });
+      return res.status(409).json({ error: `News with title: '${req.body.title}' already exists` });
     }
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -40,7 +40,7 @@ router.post('/post', Authentication, async (req: Request, res: Response): Promis
 
 /**
  * @route PUT /edit/:slug
- * @desc Edit a blog
+ * @desc Edit a news
  * @access Private (Authenticated)
  */
 router.put('/edit/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
@@ -49,34 +49,34 @@ router.put('/edit/:slug', Authentication, async (req: Request, res: Response): P
     if (field.title && field.title.length > 0)
       field.title = capitalize(field.title || '');
 
-    const existingPost = await BlogPost.findOne({ slug: req.params.slug });
+    const existingPost = await NewsPost.findOne({ slug: req.params.slug });
     if (!existingPost) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ error: 'News not found' });
     }
 
     if (field.isFeatured) {
       if (existingPost.isDeleted) {
-        return res.status(400).json({ error: "Can't feature a deleted blog" });
+        return res.status(400).json({ error: "Can't feature a deleted news" });
       }
 
-      const checkFeatured = await BlogPost.countDocuments({ isFeatured: true });
+      const checkFeatured = await NewsPost.countDocuments({ isFeatured: true });
 
       if (checkFeatured + 1 >= 3) {
-        return res.status(400).json({ error: 'Only 3 blogs can be featured.' });
+        return res.status(400).json({ error: 'Only 3 news can be featured.' });
       }
     }
 
-    const updatedPost = await BlogPost.findOneAndUpdate({ slug: req.params.slug }, { ...field, updatedAt: new Date() }, { new: true });
+    const updatedPost = await NewsPost.findOneAndUpdate({ slug: req.params.slug }, { ...field, updatedAt: new Date() }, { new: true });
     if (!updatedPost) {
-      return res.status(400).json({ error: 'Failed to update blog, Please try again' });
+      return res.status(400).json({ error: 'Failed to update news, Please try again' });
     }
-    return res.status(200).json({ message: 'Blog updated successfully', slug: updatedPost.slug });
+    return res.status(200).json({ message: 'News updated successfully', slug: updatedPost.slug });
   } catch (err) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.errors[0].message });
     }
     if ((err as MongoServerError).code === 11000) {
-      return res.status(409).json({ error: `Blog with title: '${req.body.title}' already exists` });
+      return res.status(409).json({ error: `News with title: '${req.body.title}' already exists` });
     }
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -84,27 +84,27 @@ router.put('/edit/:slug', Authentication, async (req: Request, res: Response): P
 
 /**
  * @route DELETE /delete/:slug
- * @desc Soft delete a blog
+ * @desc Soft delete a news
  * @access Private (Authenticated)
  */
 router.delete('/delete/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const existingPost = await BlogPost.findOne({ slug: req.params.slug, isDeleted: false });
+    const existingPost = await NewsPost.findOne({ slug: req.params.slug, isDeleted: false });
     if (!existingPost) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ error: 'News not found' });
     }
 
-    const deletedPost = await BlogPost.findOneAndUpdate(
+    const deletedPost = await NewsPost.findOneAndUpdate(
       { slug: req.params.slug, isDeleted: false },
       { isDeleted: true, deletedAt: new Date(), isFeatured: false },
       { new: true }
     );
 
     if (!deletedPost) {
-      return res.status(404).json({ error: 'Failed to delete blog, Please try again' });
+      return res.status(404).json({ error: 'Failed to delete news, Please try again' });
     }
 
-    return res.status(200).json({ message: 'Blog deleted successfully' });
+    return res.status(200).json({ message: 'News deleted successfully' });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -112,27 +112,27 @@ router.delete('/delete/:slug', Authentication, async (req: Request, res: Respons
 
 /**
  * @route PATCH /restore/:slug
- * @desc Restore a soft-deleted blog
+ * @desc Restore a soft-deleted news
  * @access Private (Authenticated)
  */
 router.patch('/restore/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const existingPost = await BlogPost.findOne({ slug: req.params.slug, isDeleted: true });
+    const existingPost = await NewsPost.findOne({ slug: req.params.slug, isDeleted: true });
     if (!existingPost) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ error: 'News not found' });
     }
 
-    const restoredBlog = await BlogPost.findOneAndUpdate(
+    const restoredNews = await NewsPost.findOneAndUpdate(
       { slug: req.params.slug, isDeleted: true },
       { isDeleted: false, deletedAt: null },
       { new: true }
     );
 
-    if (!restoredBlog) {
-      return res.status(404).json({ error: 'Failed to restore blog, Please try again' });
+    if (!restoredNews) {
+      return res.status(404).json({ error: 'Failed to restore news, Please try again' });
     }
 
-    return res.status(200).json({ message: 'Blog restored successfully' });
+    return res.status(200).json({ message: 'News restored successfully' });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -141,7 +141,7 @@ router.patch('/restore/:slug', Authentication, async (req: Request, res: Respons
 
 /**
  * @route GET /all
- * @desc Get all blog posts
+ * @desc Get all news posts
  * @access protected
  */
 router.get('/all', Authentication, async (req: Request, res: Response): Promise<any> => {
@@ -161,13 +161,13 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
     if (filterByPublished === 'true' || filterByPublished === 'false') option.isPublished = filterByPublished === 'true';
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
-    const posts = await BlogPost.find(option)
+    const posts = await NewsPost.find(option)
       .sort({ createdAt: sort })
       .limit(limit)
       .skip(skip)
       .select('_id title description image slug createdAt isFeatured isDeleted')
 
-    const totalPosts = await BlogPost.countDocuments(option);
+    const totalPosts = await NewsPost.countDocuments(option);
     const hasMore = Math.ceil(totalPosts / limit) > page;
 
     return res.status(200).json({ posts, limit: limit, page: page, hasMore });
@@ -179,16 +179,16 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
 
 /**
  * @route GET /all/:slug
- * @desc Get a single blog
+ * @desc Get a single news
  * @access protected
  */
 router.get('/all/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const blog = await BlogPost.findOne({ slug: req.params.slug });
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' });
+    const news = await NewsPost.findOne({ slug: req.params.slug });
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
     }
-    return res.status(200).json({ blog });
+    return res.status(200).json({ news });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -196,7 +196,7 @@ router.get('/all/:slug', Authentication, async (req: Request, res: Response): Pr
 
 /**
  * @route GET /
- * @desc Get all blog posts (excluding deleted)
+ * @desc Get all news posts (excluding deleted)
  * @access Public
  */
 router.get('/', async (req: Request, res: Response): Promise<any> => {
@@ -211,17 +211,17 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
     if (categories && categories.toLowerCase() !== 'general') option.categories = { $in: [categories] };
     if (searchQuery) option.title = { $regex: searchQuery, $options: 'i' };
 
-    const posts = await BlogPost.find(option)
+    const posts = await NewsPost.find(option)
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
       .select('_id title description image slug createdAt isFeatured isDeleted')
 
     if (!posts) {
-      return res.status(400).json({ error: 'Error fetching blog posts' });
+      return res.status(400).json({ error: 'Error fetching news posts' });
     }
 
-    const totalPosts = await BlogPost.countDocuments(option);
+    const totalPosts = await NewsPost.countDocuments(option);
     const hasMore = Math.ceil(totalPosts / limit) > page;
 
     return res.status(200).json({ posts, limit: limit, page: page, hasMore });
@@ -233,21 +233,21 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
 
 /**
  * @route GET /:slug
- * @desc Get a single blog
+ * @desc Get a single news
  * @access Public
  */
 router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
   try {
-    const blog = await BlogPost.findOne({ slug: req.params.slug, isDeleted: false, isPublished: true });
+    const news = await NewsPost.findOne({ slug: req.params.slug, isDeleted: false, isPublished: true });
 
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' });
+    if (!news) {
+      return res.status(404).json({ error: 'News not found' });
     }
 
-    blog.visit += 1;
-    await blog.save();
+    news.visit += 1;
+    await news.save();
 
-    return res.status(200).json({ blog });
+    return res.status(200).json({ news });
   } catch (err) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }

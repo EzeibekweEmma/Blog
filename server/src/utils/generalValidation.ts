@@ -45,7 +45,7 @@ export const EditValidation = z.object({
     }
   )
 
-export const BlogPostValidation = z.object({
+export const PostValidation = z.object({
   title: z.string().min(5, 'Title must be at least 5 character(s) long').max(100, 'Title should not exceed 100 character(s)'),
   description: z.string().min(50, 'Description must be at least 50 character(s) long').max(200, 'Description should not exceed 200 character(s)'),
   image: z.string().url(),
@@ -55,7 +55,7 @@ export const BlogPostValidation = z.object({
   isPublished: z.boolean().optional().nullable()
 })
 
-export const EditBlogPostValidation = z.object({
+export const EditPostValidation = z.object({
   title: z.string().min(5, 'Title must be at least 5 character(s) long').max(100, 'Title should not exceed 100 character(s)').nullable().optional(),
   description: z.string().min(50, 'Description must be at least 50 character(s) long').max(200, 'Description should not exceed 200 character(s)').nullable().optional(),
   image: z.string().url().nullable().optional(),
