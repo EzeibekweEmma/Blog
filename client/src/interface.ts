@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-export interface IBlogPost {
+export interface IPost {
   image?: string;
   title: string;
   slug: string;

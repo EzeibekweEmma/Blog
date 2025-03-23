@@ -14,9 +14,9 @@ import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-const SingleBlogPage = () => {
+const SingleNewsPage = () => {
   const { slug } = useParams();
-  const [blog, setBlog] = useState<IPost | null>(null);
+  const [news, setNews] = useState<IPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -27,15 +27,13 @@ const SingleBlogPage = () => {
   useEffect(() => {
     if (!slug) navigate('/404');
 
-    const fetchBlog = async () => {
+    const fetchNews = async () => {
       try {
         const response = await axios.get(
-          userState
-            ? `${API_URL}/blogs/all/${slug}`
-            : `${API_URL}/blogs/${slug}`
+          userState ? `${API_URL}/news/all/${slug}` : `${API_URL}/news/${slug}`
         );
-        const blog = response.data?.blog || null;
-        setBlog(blog);
+        const news = response.data?.news || null;
+        setNews(news);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
           return navigate('/404');
@@ -46,20 +44,20 @@ const SingleBlogPage = () => {
       }
     };
 
-    fetchBlog();
+    fetchNews();
   }, [slug]);
 
   const handleChange = async (action: 'delete' | 'restore') => {
     try {
       const response =
         action === 'delete'
-          ? await axios.delete(`${API_URL}/blogs/${action}/${slug}`)
-          : await axios.patch(`${API_URL}/blogs/${action}/${slug}`);
+          ? await axios.delete(`${API_URL}/news/${action}/${slug}`)
+          : await axios.patch(`${API_URL}/news/${action}/${slug}`);
 
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
-        setBlog({
-          ...blog,
+        setNews({
+          ...news,
           isDeleted: action === 'delete' ? true : false,
         } as IPost);
       }
@@ -74,10 +72,10 @@ const SingleBlogPage = () => {
         <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
       </div>
     );
-  if (!blog) return;
+  if (!news) return;
 
   // Sanitize content before rendering
-  const sanitizedContent = DOMPurify.sanitize(blog.content);
+  const sanitizedContent = DOMPurify.sanitize(news.content);
 
   return (
     <PageWrapper>
@@ -86,11 +84,11 @@ const SingleBlogPage = () => {
           <div className="absolute -top-5 right-5 gap-3 flex">
             <button
               onClick={() =>
-                handleChange(blog.isDeleted ? 'restore' : 'delete')
+                handleChange(news.isDeleted ? 'restore' : 'delete')
               }
               className="hover:border-[#2c586a] px-2 py-1 rounded-md transition-all ease-in-out border-2 flex gap-0.5 items-center"
             >
-              {blog.isDeleted ? (
+              {news.isDeleted ? (
                 <>
                   <MdOutlineSettingsBackupRestore className="text-2xl h-7 w-7 p-1 text-[#2c586a] rounded-full" />
                   <span>Restore</span>
@@ -103,7 +101,7 @@ const SingleBlogPage = () => {
               )}
             </button>
             <Link
-              to={`/blogs/edit/${blog.slug}`}
+              to={`/news/edit/${news.slug}`}
               className="hover:border-[#2c586a] px-2 py-1 rounded-md transition-all ease-in-out border-2 flex gap-0.5 items-center"
             >
               <FiEdit className="text-2xl h-7 w-7 p-1 text-[#2c586a] rounded-full stroke-2" />
@@ -113,15 +111,15 @@ const SingleBlogPage = () => {
         )}
 
         <div className="flex font-medium text-[#2c586a] items-center text-sm gap-1.5">
-          <span>{formatDate(blog.createdAt)}</span>
+          <span>{formatDate(news.createdAt)}</span>
           <span className="text-sm">•</span>
           <span>By John</span>
         </div>
-        <h1 className="text-4xl font-bold text-[#2c586a] my-2">{blog.title}</h1>
-        <p className="mb-5">{blog.description}</p>
+        <h1 className="text-4xl font-bold text-[#2c586a] my-2">{news.title}</h1>
+        <p className="mb-5">{news.description}</p>
         <img
-          src={blog.image}
-          alt="Blog Cover"
+          src={news.image}
+          alt="News Cover"
           className="mb-6 md:mb-10 w-full max-h-[67vh] rounded-lg shadow-md object-cover object-center"
         />
         <div className="flex flex-col items-center gap-5">
@@ -131,10 +129,10 @@ const SingleBlogPage = () => {
               dangerouslySetInnerHTML={{ __html: sanitizedContent }}
             />
             <div className="flex flex-wrap gap-2">
-              {blog.categories.length > 1 &&
-                blog.categories.map((category) => (
+              {news.categories.length > 1 &&
+                news.categories.map((category) => (
                   <Link
-                    to={`/blogs?categories=${category}`}
+                    to={`/news?categories=${category}`}
                     key={category}
                     className="text-[#2c586a] text-sm font-medium hover:border-b-2 border-[#2c586a] transition-all ease-in-out flex gap-0.5 items-center"
                   >
@@ -150,4 +148,4 @@ const SingleBlogPage = () => {
   );
 };
 
-export default SingleBlogPage;
+export default SingleNewsPage;

@@ -12,7 +12,7 @@ import { API_URL } from '../main';
 import { IPost } from '../interface';
 import FeaturedPosts from '../components/FeaturedPosts';
 
-const BlogListPage = () => {
+const NewsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [blogs, setBlogs] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,4 +153,4 @@ const BlogListPage = () => {
   );
 };
 
-export default BlogListPage;
+export default NewsListPage;

@@ -12,6 +12,10 @@ import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import 'react-quill/dist/quill.snow.css';
 import EditBlogPage from './routes/EditBlogPage';
+import NewsListPage from './routes/NewsListPage';
+import CreateNewsPage from './routes/CrateNewsPage';
+import EditNewsPage from './routes/EditNewsPage';
+import SingleNewsPage from './routes/SingleNewsPage';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
@@ -40,10 +44,6 @@ const router = createBrowserRouter([
         element: <BlogListPage />,
       },
       {
-        path: '/news',
-        element: <div>news</div>,
-      },
-      {
         path: '/blogs/create',
         element: <CrateBlogPage />,
       },
@@ -54,6 +54,22 @@ const router = createBrowserRouter([
       {
         path: '/blogs/:slug',
         element: <SingleBlogPage />,
+      },
+      {
+        path: '/news',
+        element: <NewsListPage />,
+      },
+      {
+        path: '/news/create',
+        element: <CreateNewsPage />,
+      },
+      {
+        path: '/news/edit/:slug',
+        element: <EditNewsPage />,
+      },
+      {
+        path: '/news/:slug',
+        element: <SingleNewsPage />,
       },
       {
         path: '/wisdom/2025/login',

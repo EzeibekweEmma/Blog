@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { IBlogPost } from '../interface';
+import { IPost } from '../interface';
 import BlogCard from './BlogCard';
 
-const RecentPosts = (props: { blog: IBlogPost[]; title: string }) => {
+const RecentPosts = (props: { blog: IPost[]; title: string }) => {
   const { blog, title } = props;
 
   return (

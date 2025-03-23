@@ -1,57 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import PageWrapper from '../components/PageWrapper';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../main';
-import { IPost } from '../interface';
 import { categories } from '../helper';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-const EditBlogPage = () => {
+const CreateNewsPage = () => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    'general',
-  ]);
+  const [selectedCategories, setSelectedCategories] = useState(['general']);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPublished, setIsPublished] = useState(false);
-  const [blog, setBlog] = useState<IPost | null>(null);
-
   const quillRef = useRef(null);
+
   const navigate = useNavigate();
-  const { slug } = useParams();
-
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/blogs/all/${slug}`);
-        const blog = response.data?.blog || null;
-        setBlog(blog);
-
-        setIsPublished(blog.isPublished);
-        setTitle(blog.title || '');
-        setDescription(blog.description || '');
-        setContent(blog.content || '');
-        setImage(blog.image || null);
-        setSelectedCategories(blog.categories || ['general']);
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          return navigate('/404');
-        }
-        console.error('Error fetching blog:', error);
-        toast.error('Failed to load blog data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBlog();
-  }, [slug, navigate]);
 
   const handleContent = (e) => {
     setContent(e);
@@ -64,7 +29,7 @@ const EditBlogPage = () => {
     input.click();
 
     input.onchange = async () => {
-      const file = input.files?.[0];
+      const file = input.files[0];
       if (!file) return;
 
       const formData = new FormData();
@@ -72,15 +37,17 @@ const EditBlogPage = () => {
 
       try {
         const response = await axios.post(`${API_URL}/media-upload`, formData);
-        if (!response.data?.url) throw new Error('Upload failed');
 
-        const quill = quillRef.current?.getEditor();
-        if (quill) {
+        if (response.status.toString().startsWith('2')) {
+          const data = response.data;
+          if (!data.url) throw new Error('Upload failed');
+          // Insert image/video into Quill
+          const quill = quillRef.current?.getEditor();
           const range = quill.getSelection();
           quill.insertEmbed(
-            range?.index ?? 0,
+            range.index,
             file.type.startsWith('video') ? 'video' : 'image',
-            response.data.url
+            data.url
           );
         }
       } catch (err) {
@@ -91,31 +58,30 @@ const EditBlogPage = () => {
 
   const handleCoverImageChange = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await axios.post(`${API_URL}/media-upload`, formData);
-      if (response.status.toString().startsWith('2')) {
-        const data = response.data;
-        if (!data.url) throw new Error('Upload failed');
-        setImage(data.url);
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await axios.post(`${API_URL}/media-upload`, formData);
+        if (response.status.toString().startsWith('2')) {
+          const data = response.data;
+          if (!data.url) throw new Error('Upload failed');
+          setImage(data.url);
+        }
+      } catch (err) {
+        console.error('Cover image upload error:', err);
+        toast.error('Cover image upload failed');
       }
-    } catch (err) {
-      console.error('Cover image upload error:', err);
-      toast.error('Cover image upload failed');
     }
   };
 
-  const handleCategoriesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCategoriesChange = (event) => {
     const { value, checked } = event.target;
-    setSelectedCategories((prev) =>
-      checked ? [...prev, value] : prev.filter((cat) => cat !== value)
-    );
+    if (checked) {
+      setSelectedCategories([...selectedCategories, value]);
+    } else {
+      setSelectedCategories(selectedCategories.filter((cat) => cat !== value));
+    }
   };
 
   const handleSubmit = async (isPublished: boolean) => {
@@ -131,13 +97,10 @@ const EditBlogPage = () => {
     };
 
     try {
-      const response = await axios.put(
-        `${API_URL}/blogs/edit/${slug}`,
-        payload
-      );
+      const response = await axios.post(`${API_URL}/news/post`, payload);
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
-        return navigate(`/blogs/${response.data.slug}`);
+        return navigate(`/news/${response.data.slug}`);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
@@ -145,7 +108,7 @@ const EditBlogPage = () => {
       } else {
         toast.error('Something went wrong!');
       }
-      console.error('Error submitting blog:', error);
+      console.error('Error submitting news:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -168,19 +131,11 @@ const EditBlogPage = () => {
     },
   };
 
-  if (isLoading)
-    return (
-      <div className="h-[80vh] w-full flex justify-center items-center  text-[#2c586a]">
-        <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
-      </div>
-    );
-  if (!blog) return;
-
   return (
     <PageWrapper>
       <div className="p-6 bg-white shadow-md rounded-lg mt-10">
         <h1 className="text-3xl font-bold text-[#2c586a] mb-6">
-          Edit Blog Post
+          Create News Post
         </h1>
 
         {/* Title Input */}
@@ -188,7 +143,7 @@ const EditBlogPage = () => {
           <input
             type="text"
             className="w-full p-3 border border-gray-200 rounded-t-lg text-xl font-semibold outline-none"
-            placeholder="Enter blog title..."
+            placeholder="Enter news title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -210,7 +165,7 @@ const EditBlogPage = () => {
           <input
             type="text"
             className="w-full px-3 py-2 border border-gray-200 rounded-b-lg mb-4 outline-none"
-            placeholder="Enter blog description to be displayed on card..."
+            placeholder="Enter news description to be displayed on card..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -244,7 +199,7 @@ const EditBlogPage = () => {
               {image && (
                 <img
                   src={image}
-                  alt="Blog Cover"
+                  alt="News Cover"
                   className="mt-4 w-1/5 rounded-lg shadow-md"
                 />
               )}
@@ -298,29 +253,27 @@ const EditBlogPage = () => {
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-[#1e4050]'
             }`}
-            onClick={() => handleSubmit(isPublished ? true : false)}
+            onClick={() => handleSubmit(true)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Updating...' : 'Update Blog'}
+            {isSubmitting ? 'Publishing...' : 'Publish News'}
           </button>
 
-          {!isPublished && (
-            <button
-              className={`bg-[#2c586a] text-sm text-white font-medium py-3 px-6 rounded-lg ${
-                isSubmitting
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-[#1e4050]'
-              }`}
-              onClick={() => handleSubmit(true)}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Publishing...' : 'Publish Blog'}
-            </button>
-          )}
+          <button
+            className={`bg-gray-400 text-sm text-white font-medium py-3 px-6 rounded-lg ${
+              isSubmitting
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-500'
+            }`}
+            onClick={() => handleSubmit(false)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Saving...' : 'Save as draft / Preview'}
+          </button>
         </div>
       </div>
     </PageWrapper>
   );
 };
 
-export default EditBlogPage;
+export default CreateNewsPage;

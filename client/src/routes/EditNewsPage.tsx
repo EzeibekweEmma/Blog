@@ -9,7 +9,7 @@ import { IPost } from '../interface';
 import { categories } from '../helper';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-const EditBlogPage = () => {
+const EditNewsPage = () => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -20,37 +20,37 @@ const EditBlogPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPublished, setIsPublished] = useState(false);
-  const [blog, setBlog] = useState<IPost | null>(null);
+  const [news, setNews] = useState<IPost | null>(null);
 
   const quillRef = useRef(null);
   const navigate = useNavigate();
   const { slug } = useParams();
 
   useEffect(() => {
-    const fetchBlog = async () => {
+    const fetchNews = async () => {
       try {
-        const response = await axios.get(`${API_URL}/blogs/all/${slug}`);
-        const blog = response.data?.blog || null;
-        setBlog(blog);
+        const response = await axios.get(`${API_URL}/news/all/${slug}`);
+        const news = response.data?.news || null;
+        setNews(news);
 
-        setIsPublished(blog.isPublished);
-        setTitle(blog.title || '');
-        setDescription(blog.description || '');
-        setContent(blog.content || '');
-        setImage(blog.image || null);
-        setSelectedCategories(blog.categories || ['general']);
+        setIsPublished(news.isPublished);
+        setTitle(news.title || '');
+        setDescription(news.description || '');
+        setContent(news.content || '');
+        setImage(news.image || null);
+        setSelectedCategories(news.categories || ['general']);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
           return navigate('/404');
         }
-        console.error('Error fetching blog:', error);
-        toast.error('Failed to load blog data');
+        console.error('Error fetching news:', error);
+        toast.error('Failed to load news data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBlog();
+    fetchNews();
   }, [slug, navigate]);
 
   const handleContent = (e) => {
@@ -131,13 +131,10 @@ const EditBlogPage = () => {
     };
 
     try {
-      const response = await axios.put(
-        `${API_URL}/blogs/edit/${slug}`,
-        payload
-      );
+      const response = await axios.put(`${API_URL}/news/edit/${slug}`, payload);
       if (response.status.toString().startsWith('2')) {
         toast.success(response.data.message);
-        return navigate(`/blogs/${response.data.slug}`);
+        return navigate(`/news/${response.data.slug}`);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
@@ -145,7 +142,7 @@ const EditBlogPage = () => {
       } else {
         toast.error('Something went wrong!');
       }
-      console.error('Error submitting blog:', error);
+      console.error('Error submitting news:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -174,13 +171,13 @@ const EditBlogPage = () => {
         <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
       </div>
     );
-  if (!blog) return;
+  if (!news) return;
 
   return (
     <PageWrapper>
       <div className="p-6 bg-white shadow-md rounded-lg mt-10">
         <h1 className="text-3xl font-bold text-[#2c586a] mb-6">
-          Edit Blog Post
+          Edit News Post
         </h1>
 
         {/* Title Input */}
@@ -188,7 +185,7 @@ const EditBlogPage = () => {
           <input
             type="text"
             className="w-full p-3 border border-gray-200 rounded-t-lg text-xl font-semibold outline-none"
-            placeholder="Enter blog title..."
+            placeholder="Enter news title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -210,7 +207,7 @@ const EditBlogPage = () => {
           <input
             type="text"
             className="w-full px-3 py-2 border border-gray-200 rounded-b-lg mb-4 outline-none"
-            placeholder="Enter blog description to be displayed on card..."
+            placeholder="Enter news description to be displayed on card..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -244,7 +241,7 @@ const EditBlogPage = () => {
               {image && (
                 <img
                   src={image}
-                  alt="Blog Cover"
+                  alt="News Cover"
                   className="mt-4 w-1/5 rounded-lg shadow-md"
                 />
               )}
@@ -301,7 +298,7 @@ const EditBlogPage = () => {
             onClick={() => handleSubmit(isPublished ? true : false)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Updating...' : 'Update Blog'}
+            {isSubmitting ? 'Updating...' : 'Update News'}
           </button>
 
           {!isPublished && (
@@ -314,7 +311,7 @@ const EditBlogPage = () => {
               onClick={() => handleSubmit(true)}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Publishing...' : 'Publish Blog'}
+              {isSubmitting ? 'Publishing...' : 'Publish News'}
             </button>
           )}
         </div>
@@ -323,4 +320,4 @@ const EditBlogPage = () => {
   );
 };
 
-export default EditBlogPage;
+export default EditNewsPage;

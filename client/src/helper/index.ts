@@ -5,3 +5,11 @@ export const categories = [
   'SEO',
   'Marketing'
 ]
+
+export const newsCategories = [
+  'Politics',
+  'Business',
+  'Economy',
+  'Sports',
+  'Entertainment'
+]

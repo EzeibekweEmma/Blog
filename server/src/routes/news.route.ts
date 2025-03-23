@@ -165,6 +165,7 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
       .sort({ createdAt: sort })
       .limit(limit)
       .skip(skip)
+      .populate('user', 'name email')
       .select('_id title description image slug createdAt isFeatured isDeleted')
 
     const totalPosts = await NewsPost.countDocuments(option);
@@ -184,7 +185,7 @@ router.get('/all', Authentication, async (req: Request, res: Response): Promise<
  */
 router.get('/all/:slug', Authentication, async (req: Request, res: Response): Promise<any> => {
   try {
-    const news = await NewsPost.findOne({ slug: req.params.slug });
+    const news = await NewsPost.findOne({ slug: req.params.slug }).populate('user', 'name');
     if (!news) {
       return res.status(404).json({ error: 'News not found' });
     }
@@ -215,6 +216,7 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
+      .populate('user', 'name')
       .select('_id title description image slug createdAt isFeatured isDeleted')
 
     if (!posts) {
@@ -238,7 +240,7 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
  */
 router.get('/:slug', async (req: Request, res: Response): Promise<any> => {
   try {
-    const news = await NewsPost.findOne({ slug: req.params.slug, isDeleted: false, isPublished: true });
+    const news = await NewsPost.findOne({ slug: req.params.slug, isDeleted: false, isPublished: true }).populate('user', 'name');
 
     if (!news) {
       return res.status(404).json({ error: 'News not found' });

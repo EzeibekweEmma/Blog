@@ -1,13 +1,13 @@
-import { IBlogPost } from '../interface';
+import { IPost } from '../interface';
 import BlogCard from './BlogCard';
 
 const FeaturedPosts = (props: {
-  blog: IBlogPost[];
-  setBlogs: (blogs: IBlogPost[]) => void;
+  blog: IPost[];
+  setBlogs: (blogs: IPost[]) => void;
 }) => {
   const { blog } = props;
 
-  function setBlogs(blogs: IBlogPost[]): void {
+  function setBlogs(blogs: IPost[]): void {
     props.setBlogs(blogs);
   }
   return (

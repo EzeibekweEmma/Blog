@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { IBlogPost } from '../interface';
+import { IPost } from '../interface';
 import { getDaysAgo } from '../utils';
 import {
   IoHeartOutline,
@@ -18,8 +18,8 @@ const BlogCard = ({
   setBlogs,
 }: {
   isFeatured?: boolean;
-  blog: IBlogPost;
-  setBlogs: (blogs: IBlogPost[]) => void;
+  blog: IPost;
+  setBlogs: (blogs: IPost[]) => void;
 }) => {
   const location = useLocation();
   const userState = Cookies.get('userDetails')
@@ -52,10 +52,8 @@ const BlogCard = ({
             ? { ...blog, isFeatured: option }
             : { ...blog, isDeleted: option, isFeatured: false };
 
-        setBlogs((prevBlogs: IBlogPost[]) =>
-          prevBlogs.map((b: IBlogPost) =>
-            b.slug === blog.slug ? updateBlog : b
-          )
+        setBlogs((prevBlogs: IPost[]) =>
+          prevBlogs.map((b: IPost) => (b.slug === blog.slug ? updateBlog : b))
         );
       }
     } catch (error) {
