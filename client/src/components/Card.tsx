@@ -148,7 +148,7 @@ const Card = ({
           </Link>
         </p>
         <div className="flex justify-between items-center mt-2 text-xs gap-1.5 text-[#2c586a]/80">
-          <div>
+          <div className="flex gap-1.5 items-center">
             <span>By {post.user.name}</span>
             <span className="text-sm">•</span>
             <span>{getDaysAgo(post.createdAt)}</span>

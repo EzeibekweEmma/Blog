@@ -11,12 +11,13 @@ import Cookies from 'js-cookie';
 import { API_URL } from '../main';
 import { IPost } from '../interface';
 import FeaturedPosts from '../components/FeaturedPosts';
+import Pagination from '../components/Pagination';
 
 const NewsListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [news, setNews] = useState<IPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true);
+  const [totalPage, setTotalPage] = useState(1);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
   const [options, setOptions] = useState<{
     categories: string;
@@ -62,7 +63,7 @@ const NewsListPage = () => {
 
       if (response.status.toString().startsWith('2')) {
         setNews(response.data.posts || []);
-        setHasMore(response.data.hasMore);
+        setTotalPage(response.data.totalPage);
 
         // Update search params
         const newParams = new URLSearchParams(searchParams);
@@ -85,12 +86,6 @@ const NewsListPage = () => {
       console.error('Fetch error:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleOnLoad = () => {
-    if (hasMore && !isLoading) {
-      setPage((prevPage) => prevPage + 1);
     }
   };
 
@@ -130,17 +125,11 @@ const NewsListPage = () => {
               ))}
             </div>
             <div className="text-center mt-4">
-              {hasMore ? (
-                <button
-                  onClick={handleOnLoad}
-                  className="bg-[#2c586a] hover:bg-[#2c586a] text-white font-bold py-2 px-4 rounded-full"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Loading...' : 'Load more'}
-                </button>
-              ) : (
-                <p className="text-gray-500">No more news available.</p>
-              )}
+              <Pagination
+                totalPages={totalPage}
+                page={page}
+                setPage={setPage}
+              />
             </div>
           </>
         ) : (
