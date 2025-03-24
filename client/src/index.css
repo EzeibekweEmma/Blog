@@ -100,3 +100,48 @@ body {
   color: #2c586a;
   text-decoration: underline;
 }
+
+@media (max-width: 768px) { 
+  .prose-lg h1 {
+    font-size: 1.5em;
+  }
+
+  .prose-lg h2 {
+    font-size: 1.5em;
+  }
+
+  .prose-lg h3 {
+    font-size: 1.3em;
+  }
+
+  .prose-lg blockquote {
+    padding: 6px;
+    border-left-width: 3px;
+  }
+}
+
+@media (max-width: 480px) { 
+  .prose-lg h1 {
+    font-size: 1.1em;
+  }
+
+  .prose-lg h2 {
+    font-size: 0.9em;
+  }
+
+  .prose-lg h3 {
+    font-size: 0.7em;
+  }
+
+  .prose-lg p,
+  .prose-lg li,
+  .prose-lg blockquote {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .prose-lg blockquote {
+    padding: 4px;
+    border-left-width: 2px;
+  }
+}
