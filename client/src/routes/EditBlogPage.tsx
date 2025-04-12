@@ -8,6 +8,7 @@ import { API_URL } from '../main';
 import { IPost } from '../interface';
 import { blogCategories } from '../helper';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import NotFoundPage from './NotFoundPage';
 
 const EditBlogPage = () => {
   const [content, setContent] = useState('');
@@ -174,7 +175,7 @@ const EditBlogPage = () => {
         <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
       </div>
     );
-  if (!blog) return;
+  if (!blog) return <NotFoundPage baseLink="/blogs" />;
 
   return (
     <PageWrapper>

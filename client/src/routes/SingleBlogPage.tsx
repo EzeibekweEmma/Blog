@@ -13,6 +13,7 @@ import { FiEdit } from 'react-icons/fi';
 import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import PostLoadingState from '../components/PostLoadingState';
+import NotFoundPage from './NotFoundPage';
 
 const SingleBlogPage = () => {
   const { slug } = useParams();
@@ -69,7 +70,7 @@ const SingleBlogPage = () => {
   };
 
   if (isLoading) return <PostLoadingState />;
-  if (!blog) return;
+  if (!blog) return <NotFoundPage baseLink="/blogs" />;
 
   // Sanitize content before rendering
   const sanitizedContent = DOMPurify.sanitize(blog.content);

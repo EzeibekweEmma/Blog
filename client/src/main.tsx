@@ -4,7 +4,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Homepage from './routes/Homepage';
 import BlogListPage from './routes/BlogListPage';
-import CrateBlogPage from './routes/crateBlogPage';
+import CrateBlogPage from './routes/CrateBlogPage';
 import LoginPage from './routes/LoginPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
@@ -16,6 +16,7 @@ import NewsListPage from './routes/NewsListPage';
 import CreateNewsPage from './routes/CrateNewsPage';
 import EditNewsPage from './routes/EditNewsPage';
 import SingleNewsPage from './routes/SingleNewsPage';
+import NotFoundPage from './routes/NotFoundPage';
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
@@ -77,7 +78,7 @@ const router = createBrowserRouter([
       },
       {
         path: '*',
-        element: <div>404 Not Found</div>,
+        element: <NotFoundPage />,
       },
     ],
   },

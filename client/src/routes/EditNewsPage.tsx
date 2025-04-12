@@ -8,6 +8,7 @@ import { API_URL } from '../main';
 import { IPost } from '../interface';
 import { newsCategories } from '../helper';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import NotFoundPage from './NotFoundPage';
 
 const EditNewsPage = () => {
   const [content, setContent] = useState('');
@@ -171,7 +172,7 @@ const EditNewsPage = () => {
         <AiOutlineLoading3Quarters className="text-7xl animate-spin" />
       </div>
     );
-  if (!news) return;
+  if (!news) return <NotFoundPage baseLink="/news" />;
 
   return (
     <PageWrapper>

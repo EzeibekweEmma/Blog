@@ -153,10 +153,12 @@ const Card = ({
             <span className="text-sm">•</span>
             <span>{getDaysAgo(post.createdAt)}</span>
           </div>
-          <div className="flex gap-1.5 items-center">
-            <FaRegEye />
-            <span>{formatNumber(post.visit!)}</span>
-          </div>
+          {userState && location.pathname !== '/' && (
+            <div className="flex gap-1.5 items-center">
+              <FaRegEye />
+              <span>{formatNumber(post.visit!)}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

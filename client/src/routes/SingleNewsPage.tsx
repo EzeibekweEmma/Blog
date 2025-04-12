@@ -13,6 +13,7 @@ import { FiEdit } from 'react-icons/fi';
 import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import PostLoadingState from '../components/PostLoadingState';
+import NotFoundPage from './NotFoundPage';
 
 const SingleNewsPage = () => {
   const { slug } = useParams();
@@ -67,7 +68,7 @@ const SingleNewsPage = () => {
   };
 
   if (isLoading) return <PostLoadingState />;
-  if (!news) return;
+  if (!news) return <NotFoundPage baseLink="/news" />;
 
   // Sanitize content before rendering
   const sanitizedContent = DOMPurify.sanitize(news.content);
