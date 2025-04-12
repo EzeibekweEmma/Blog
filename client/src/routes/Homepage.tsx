@@ -44,7 +44,7 @@ const Homepage = () => {
     <PageWrapper>
       <div className="flex flex-col gap-4">
         {/* INTRODUCTION */}
-        <div className="flex items-center justify-between md:mb-5 border-b border-[#2c586a]/60 pb-10">
+        <div className="flex sm:flex-row flex-col gap-y-5 sm:gap-0 items-center justify-between md:mb-5 border-b border-[#2c586a]/60 pb-10">
           <div>
             <h1
               className="text-[#2c586a] text-2xl md:text-5xl lg:text-6xl font-bold max-w-4xl"

@@ -65,15 +65,11 @@ export const EditPostValidation = z.object({
   isPublished: z.boolean().optional().nullable()
 })
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpe', 'image/png', 'image/gif', 'image/webp', 'video/mp4']
 export const fileSchema = z.object({
   fieldname: z.literal('file'),
   originalname: z.string(),
   encoding: z.string(),
-  mimetype: z.string().refine(
-    (type) => ALLOWED_MIME_TYPES.includes(type),
-    { message: 'Invalid file type' }
-  ),
+  mimetype: z.string().regex(/^(image|video)\/[a-zA-Z0-9]+$/),
   destination: z.string(),
   filename: z.string(),
   path: z.string(),

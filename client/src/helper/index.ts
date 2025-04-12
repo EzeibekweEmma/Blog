@@ -1,9 +1,10 @@
 export const blogCategories = [
-  'Web Design',
-  'Development',
-  'Database',
-  'SEO',
-  'Marketing'
+  'Africa',
+  'Asia',
+  'Australia',
+  'Europe',
+  'North America',
+  'South America'
 ]
 
 export const newsCategories = [
