@@ -4,7 +4,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Homepage from './routes/Homepage';
 import BlogListPage from './routes/BlogListPage';
-import CrateBlogPage from './routes/CrateBlogPage';
+import CreateBlogPage from './routes/CreateBlogPage';
 import LoginPage from './routes/LoginPage';
 import SingleBlogPage from './routes/SingleBlogPage';
 import MainLayout from './layouts/MainLayout';
@@ -13,7 +13,7 @@ import axios from 'axios';
 import 'react-quill/dist/quill.snow.css';
 import EditBlogPage from './routes/EditBlogPage';
 import NewsListPage from './routes/NewsListPage';
-import CreateNewsPage from './routes/CrateNewsPage';
+import CreateNewsPage from './routes/CreateNewsPage';
 import EditNewsPage from './routes/EditNewsPage';
 import SingleNewsPage from './routes/SingleNewsPage';
 import NotFoundPage from './routes/NotFoundPage';
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/blogs/create',
-        element: <CrateBlogPage />,
+        element: <CreateBlogPage />,
       },
       {
         path: '/blogs/edit/:slug',
