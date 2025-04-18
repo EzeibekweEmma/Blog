@@ -17,8 +17,8 @@ export const generateTokenAndSetCookie = (res: Response, userId: string, userRol
   })
   res.cookie('token', token, {
     httpOnly: true,
-    secure: config.app.environment === 'production',
-    sameSite: config.app.environment === 'production' ? 'none' : 'lax',
+    secure: config.app.environment !== 'development',
+    sameSite: config.app.environment !== 'development' ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   })
 }
