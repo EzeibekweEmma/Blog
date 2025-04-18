@@ -42,17 +42,23 @@ const Navbar = () => {
   ];
 
   const handleLogout = async () => {
-    setIsOpen(false);
-    const response = await axios.post(`${API_URL}/auth/logout`);
+    try {
+      setIsOpen(false);
+      const response = await axios.post(`${API_URL}/auth/logout`);
 
-    if (response.status.toString().startsWith('2')) {
-      toast.success(response.data.message);
-      navigate('/');
-    } else {
-      toast.success('Logged out successfully');
       Cookies.remove('userDetails');
       Cookies.remove('token');
+
+      if (response.status.toString().startsWith('2')) {
+        toast.success(response.data.message);
+      } else {
+        toast.success('Logged out successfully');
+      }
+
       navigate('/');
+    } catch (error) {
+      toast.error('Something went wrong during logout.');
+      console.error('Logout error:', error);
     }
   };
 

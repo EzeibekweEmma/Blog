@@ -43,7 +43,7 @@ const Search: React.FC<IOptionProps> = ({ setOptions, options }) => {
         <input
           type="text"
           placeholder="search for a blog..."
-          className="bg-transparent outline-none inset-2 w-full placeholder:text-[#2c586a]"
+          className="bg-transparent outline-none inset-2 w-full placeholder:text-[#2c586a] pr-9 md:pr-2"
           onChange={handleChange}
           value={searchQuery}
         />
