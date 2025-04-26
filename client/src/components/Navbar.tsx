@@ -1,88 +1,88 @@
-import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { API_URL } from '../main';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { RiWalkLine } from 'react-icons/ri';
-import { FaBloggerB, FaHome, FaNewspaper } from 'react-icons/fa';
+import Cookies from 'js-cookie'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { API_URL } from '../main'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { RiWalkLine } from 'react-icons/ri'
+import { FaBloggerB, FaHome, FaNewspaper } from 'react-icons/fa'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const authRoutes = [
     '/blogs/create',
-    '/news/create',
-    '/blogs/edit/',
-    '/news/edit/',
+    '/blogs/edit/'
+    // '/news/create',
+    // '/news/edit/',
   ];
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
-    : null;
+    : null
 
   useEffect(() => {
     if (location.pathname === '/wisdom/2025/login' && userState) {
-      navigate('/');
+      navigate('/')
     } else if (
       !userState &&
       authRoutes.some((route) =>
         location.pathname.toLowerCase().includes(route.toLowerCase())
       )
     ) {
-      navigate('/');
+      navigate('/')
     }
-  }, [userState, location.pathname, navigate]);
+  }, [userState, location.pathname, navigate])
 
   const navList = [
     { name: 'Home', path: '/', icon: <FaHome /> },
-    { name: 'Blogs', path: '/blogs', icon: <FaBloggerB /> },
-    { name: 'News', path: '/news', icon: <FaNewspaper /> },
+    { name: 'Blogs', path: '/blogs', icon: <FaBloggerB /> }
+    // { name: 'News', path: '/news', icon: <FaNewspaper /> },
   ];
 
   const handleLogout = async () => {
     try {
-      setIsOpen(false);
-      const response = await axios.post(`${API_URL}/auth/logout`);
+      setIsOpen(false)
+      const response = await axios.post(`${API_URL}/auth/logout`)
 
-      Cookies.remove('userDetails');
-      Cookies.remove('token');
+      Cookies.remove('userDetails')
+      Cookies.remove('token')
 
       if (response.status.toString().startsWith('2')) {
-        toast.success(response.data.message);
+        toast.success(response.data.message)
       } else {
-        toast.success('Logged out successfully');
+        toast.success('Logged out successfully')
       }
 
-      navigate('/');
+      navigate('/')
     } catch (error) {
-      toast.error('Something went wrong during logout.');
-      console.error('Logout error:', error);
+      toast.error('Something went wrong during logout.')
+      console.error('Logout error:', error)
     }
-  };
+  }
 
   return (
-    <nav className="flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50">
-      <div className="w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]">
-        <div className="w-full h-16 md:h-20 flex items-center justify-between">
+    <nav className='flex justify-center bg-[#2c586a] text-[#f3f8f6] z-50'>
+      <div className='w-[95vw] md:w-[90vw] lg:w-[85vw] xl:w-[80vw] 2xl:w-[1250px]'>
+        <div className='w-full h-16 md:h-20 flex items-center justify-between'>
           {/* LOGO */}
           <Link
-            to="/"
-            className="flex items-center gap-1 sm:text-2xl font-bold"
+            to='/'
+            className='flex items-center gap-1 sm:text-2xl font-bold'
           >
             <span>Empire Report</span>
           </Link>
           {/* MOBILE MENU */}
-          <div className="md:hidden">
+          <div className='md:hidden'>
             {/* MOBILE BUTTON */}
             <div
-              className="cursor-pointer text-4xl"
+              className='cursor-pointer text-4xl'
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {/* Change Hamburger Icon */}
               {/* {isOpen ? "X" : "☰"} */}
-              <div className="flex flex-col gap-[5.4px]">
+              <div className='flex flex-col gap-[5.4px]'>
                 <div
                   className={`h-[3px] rounded-md w-6 bg-[#f3f8f6] origin-left transition-all ease-in-out ${
                     isOpen && 'rotate-45'
@@ -122,7 +122,7 @@ const Navbar = () => {
               {userState && (
                 <button
                   onClick={() => handleLogout()}
-                  className="py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 items-center flex gap-1"
+                  className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 items-center flex gap-1'
                 >
                   <span>Logout</span>
                   <RiWalkLine />
@@ -131,7 +131,7 @@ const Navbar = () => {
             </div>
           </div>
           {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
+          <div className='hidden md:flex items-center gap-8 xl:gap-12 font-medium'>
             {navList.map((navItem, index) => (
               <Link
                 to={navItem.path}
@@ -147,7 +147,7 @@ const Navbar = () => {
             {userState && (
               <button
                 onClick={() => handleLogout()}
-                className="py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 flex gap-1 items-center"
+                className='py-1 px-4 rounded-3xl hover:bg-[#f3f8f6] bg-[#2c586a] hover:text-[#2c586a] text-[#f3f8f6] border-[#f3f8f6] border-2 flex gap-1 items-center'
               >
                 <span>Logout</span>
                 <RiWalkLine />
@@ -157,7 +157,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
+  )
 };
 
-export default Navbar;
+export default Navbar
