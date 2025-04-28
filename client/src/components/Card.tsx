@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { IPost } from '../interface';
-import { formatNumber, getDaysAgo } from '../utils';
+import { formatNumber, timeAgo } from '../utils';
 import {
   IoHeartOutline,
   IoHeartSharp,
@@ -21,15 +21,15 @@ const Card = ({
 }: {
   isFeatured?: boolean;
   post: IPost;
-  setPost?: (posts: IPost[]) => void;
+  setPost?: React.Dispatch<React.SetStateAction<IPost[]>>;
   type?: 'blogs' | 'news';
 }) => {
   const location = useLocation();
   const path = type
     ? type
-    : location.pathname.includes('/blog')
-    ? 'blogs'
-    : 'news';
+    : location.pathname.includes('/news')
+    ? 'news'
+    : 'blogs';
   const userState = Cookies.get('userDetails')
     ? JSON.parse(Cookies.get('userDetails') || '{}')
     : null;
@@ -60,9 +60,11 @@ const Card = ({
             ? { ...post, isFeatured: option }
             : { ...post, isDeleted: option, isFeatured: false };
 
-        setPost((prevPosts: IPost[]) =>
-          prevPosts.map((b: IPost) => (b.slug === post.slug ? updatePost : b))
-        );
+        if (setPost) {
+          setPost((prevPosts: IPost[]) =>
+            prevPosts.map((b: IPost) => (b.slug === post.slug ? updatePost : b))
+          );
+        }
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
@@ -151,7 +153,7 @@ const Card = ({
           <div className="flex gap-1.5 items-center">
             <span>By {post.user.name}</span>
             <span className="text-sm">•</span>
-            <span>{getDaysAgo(post.createdAt)}</span>
+            <span>{timeAgo(post.createdAt)}</span>
           </div>
           {userState && location.pathname !== '/' && (
             <div className="flex gap-1.5 items-center">

@@ -13,25 +13,26 @@ export const formatDate = (dateString: Date) => {
   return `${month} ${day}${getOrdinalSuffix(day)}, ${year}`;
 };
 
-export const getDaysAgo = (createdAt: Date) => {
-  const createdDate = new Date(createdAt);
-  const now = new Date();
-  const differenceInTime = now.getTime() - createdDate.getTime();
-  const differenceInDays = Math.floor(
-    differenceInTime / (1000 * 60 * 60 * 24)
-  );
+export const timeAgo = (createdDate: Date, locale = 'en') => {
+  const date = new Date(createdDate);
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const seconds = Math.floor((date.getTime() - Date.now()) / 1000);
+  const thresholds = {
+    year: 60 * 60 * 24 * 365,
+    month: 60 * 60 * 24 * 30,
+    day: 60 * 60 * 24,
+    hour: 60 * 60,
+    minute: 60,
+    second: 1,
+  };
 
-  const res =
-    differenceInTime < 1000 * 60
-      ? 'Just now'
-      : differenceInTime < 1000 * 60 * 60
-        ? Math.floor(differenceInTime / (1000 * 60)) + ' minutes ago'
-        : differenceInDays < 1
-          ? Math.floor(differenceInTime / (1000 * 60 * 60)) + ' hours ago'
-          : differenceInDays === 1
-            ? 'A day ago'
-            : differenceInDays + ' days ago';
-  return res;
+  for (const [unit, value] of Object.entries(thresholds)) {
+    if (Math.abs(seconds) >= value) {
+      const delta = Math.round(seconds / value);
+      return rtf.format(delta, unit as Intl.RelativeTimeFormatUnit);
+    }
+  }
+  return rtf.format(seconds, 'second');
 };
 
 export const formatNumber = (num: number): string => {
