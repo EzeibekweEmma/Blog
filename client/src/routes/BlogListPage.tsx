@@ -4,13 +4,13 @@ import PageWrapper from '../components/PageWrapper';
 import MainCategories from '../components/MainCategories';
 import Card from '../components/Card';
 import EmptyCard from '../components/EmptyCardState';
-import Search from '../components/Search';
+// import Search from '../components/Search';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { API_URL } from '../main';
 import { IPost } from '../interface';
-import FeaturedPosts from '../components/FeaturedPosts';
+// import FeaturedPosts from '../components/FeaturedPosts';
 import Pagination from '../components/Pagination';
 
 const BlogListPage = () => {
@@ -89,7 +89,7 @@ const BlogListPage = () => {
     }
   };
 
-  const featuredBlog = blogs.filter((b) => b.isFeatured === true);
+  // const featuredBlog = blogs.filter((b) => b.isFeatured === true);
 
   return (
     <PageWrapper>
@@ -106,7 +106,7 @@ const BlogListPage = () => {
           <>
             {checkOptions && (
               <>
-                <FeaturedPosts post={featuredBlog} setPost={setBlogs} />
+                {/* <FeaturedPosts post={featuredBlog} setPost={setBlogs} /> */}
                 <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
               </>
             )}
