@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Important pages to crawl
+Allow: /blogs
+Allow: /blogs/*
+
+# Block admin pages
+Disallow: /wisdom/
+
+# Sitemap location
+Sitemap: https://empire-reports.com/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1

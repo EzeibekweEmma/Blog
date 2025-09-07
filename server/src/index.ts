@@ -41,10 +41,8 @@ app.use((req, res, next) => {
     res.setTimeout(timeouts[req.method as keyof typeof timeouts] || 20000, () => {
       res.status(408).json({ error: 'Request timed out' })
     })
-    next()
-  } else {
-    next()
   }
+  next()
 })
 
 // Routes setup

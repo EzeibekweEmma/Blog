@@ -12,6 +12,7 @@ import { API_URL } from '../main';
 import { IPost } from '../interface';
 // import FeaturedPosts from '../components/FeaturedPosts';
 import Pagination from '../components/Pagination';
+import { SEO } from '../components/SEO';
 
 const BlogListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -89,53 +90,83 @@ const BlogListPage = () => {
     }
   };
 
-  // const featuredBlog = blogs.filter((b) => b.isFeatured === true);
+  // Generate dynamic SEO based on filters
+  const generateSEOContent = () => {
+    let title = 'Travel Blogs & Stories';
+    let description =
+      'Discover amazing travel blogs and stories from around the world. Read about adventures, travel tips, and cultural experiences.';
+
+    if (options.searchQuery) {
+      title = `Search Results for "${options.searchQuery}"`;
+      description = `Find travel blogs and stories related to "${options.searchQuery}". Explore our collection of travel content.`;
+    } else if (options.categories && options.categories !== 'General') {
+      title = `${options.categories} Travel Blogs`;
+      description = `Explore travel blogs about ${options.categories}. Discover destinations, tips, and stories from this amazing region.`;
+    }
+
+    if (page > 1) {
+      title += ` - Page ${page}`;
+    }
+
+    return { title, description };
+  };
+
+  const seoContent = generateSEOContent();
 
   return (
-    <PageWrapper>
-      <div>
-        <MainCategories setOptions={setOptions} options={options} />
+    <>
+      <SEO
+        title={seoContent.title}
+        description={seoContent.description}
+        url={`https://empire-reports.com/blogs${
+          searchParams.toString() ? '?' + searchParams.toString() : ''
+        }`}
+        type="website"
+      />
+      <PageWrapper>
+        <div>
+          <MainCategories setOptions={setOptions} options={options} />
 
-        {isLoading && blogs.length === 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-            {[...Array(6)].map((_, i) => (
-              <EmptyCard isFeatured key={i} />
-            ))}
-          </div>
-        ) : blogs.length > 0 ? (
-          <>
-            {checkOptions && (
-              <>
-                {/* <FeaturedPosts post={featuredBlog} setPost={setBlogs} /> */}
-                <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
-              </>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
-              {blogs.map((blog) => (
-                <Card
-                  isFeatured
-                  post={blog}
-                  setPost={setBlogs}
-                  key={blog.slug}
-                />
+          {isLoading && blogs.length === 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+              {[...Array(6)].map((_, i) => (
+                <EmptyCard isFeatured key={i} />
               ))}
             </div>
-            <div className="text-center mt-4">
-              <Pagination
-                totalPages={totalPage}
-                page={page}
-                setPage={setPage}
-              />
+          ) : blogs.length > 0 ? (
+            <>
+              {checkOptions && (
+                <>
+                  <h1 className="mt-8 text-2xl text-gray-600">Recent Blogs</h1>
+                </>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+                {blogs.map((blog) => (
+                  <Card
+                    isFeatured
+                    post={blog}
+                    setPost={setBlogs}
+                    key={blog.slug}
+                  />
+                ))}
+              </div>
+              <div className="text-center mt-4">
+                <Pagination
+                  totalPages={totalPage}
+                  page={page}
+                  setPage={setPage}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex justify-center items-center h-[50vh]">
+              <h1 className="text-2xl text-gray-600">No blogs found</h1>
             </div>
-          </>
-        ) : (
-          <div className="flex justify-center items-center h-[50vh]">
-            <h1 className="text-2xl text-gray-600">No blogs found</h1>
-          </div>
-        )}
-      </div>
-    </PageWrapper>
+          )}
+        </div>
+      </PageWrapper>
+    </>
   );
 };
 

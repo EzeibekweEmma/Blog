@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Homepage from './routes/Homepage';
 import BlogListPage from './routes/BlogListPage';
 import CreateBlogPage from './routes/CreateBlogPage';
@@ -82,7 +83,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ToastContainer />
-    <RouterProvider router={router} />
+    <HelmetProvider>
+      <ToastContainer />
+      <RouterProvider router={router} />
+    </HelmetProvider>
   </StrictMode>
 );

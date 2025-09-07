@@ -36,3 +36,14 @@ export interface IOptionProps {
     sort: string;
   };
 }
+
+export interface SEOProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+  url?: string;
+  type?: 'website' | 'article';
+  author?: string;
+  publishedTime?: string;
+}
