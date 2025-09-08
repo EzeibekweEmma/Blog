@@ -50,6 +50,7 @@ const BlogListPage = () => {
       : true;
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     fetchBlogs(page);
   }, [page, JSON.stringify(options)]);
 

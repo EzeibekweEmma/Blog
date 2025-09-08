@@ -43,7 +43,13 @@ export interface SEOProps {
   keywords?: string;
   image?: string;
   url?: string;
-  type?: 'website' | 'article';
+  type?: 'website' | 'article' | 'blog' | 'product';
   author?: string;
   publishedTime?: string;
+  modifiedTime?: string;
+  categories?: string[];
+  tags?: string[];
+  locale?: string;
+  siteName?: string;
+  twitterHandle?: string;
 }

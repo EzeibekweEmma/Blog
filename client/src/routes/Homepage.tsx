@@ -17,6 +17,7 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const fetchBlogs = async () => {
       try {
         const blogResponse = await axios.get(`${API_URL}/blogs?limit=6`);

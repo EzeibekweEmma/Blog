@@ -4,12 +4,30 @@ Allow: /
 # Important pages to crawl
 Allow: /blogs
 Allow: /blogs/*
+Allow: /sitemap.xml
 
-# Block admin pages
+# Block admin and internal pages
 Disallow: /wisdom/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+
+# Block query parameters that don't add value
+Disallow: /*?*utm_*
+Disallow: /*?*fb*
+Disallow: /*?*gclid*
+
+# Allow search engines but prevent excessive crawling
+Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://empire-reports.com/sitemap.xml
 
-# Crawl delay (optional - helps prevent server overload)
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot  
+Allow: /
 Crawl-delay: 1
