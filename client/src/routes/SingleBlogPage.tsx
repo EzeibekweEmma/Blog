@@ -1,3 +1,4 @@
+// Fix for SingleBlogPage.tsx - Add alt text to content images
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -51,6 +52,44 @@ const SingleBlogPage = () => {
     fetchBlog();
   }, [slug]);
 
+  // Add alt text to images in content
+  useEffect(() => {
+    if (blog?.content) {
+      const contentContainer = document.querySelector('.prose');
+      if (contentContainer) {
+        const images = contentContainer.querySelectorAll('img');
+        images.forEach((img, index) => {
+          if (!img.alt) {
+            // Generate meaningful alt text based on context
+            const figcaption = img
+              .closest('figure')
+              ?.querySelector('figcaption');
+            const caption = figcaption?.textContent?.trim();
+
+            if (caption) {
+              img.alt = caption;
+            } else {
+              // Fallback alt text
+              img.alt = `Image ${index + 1} from ${blog.title}`;
+            }
+          }
+
+          // Add loading lazy for performance (except first image)
+          if (index > 0) {
+            img.loading = 'lazy';
+            img.decoding = 'async';
+          }
+
+          // Add error handling
+          img.onerror = () => {
+            img.style.display = 'none';
+            console.warn(`Failed to load image: ${img.src}`);
+          };
+        });
+      }
+    }
+  }, [blog]);
+
   const handleChange = async (action: 'delete' | 'restore') => {
     try {
       const response =
@@ -76,17 +115,53 @@ const SingleBlogPage = () => {
   // Sanitize content before rendering
   const sanitizedContent = DOMPurify.sanitize(blog.content);
 
+  // Generate optimized image URL for hero image
+  const getOptimizedImageUrl = (
+    originalUrl: string,
+    width: number,
+    height: number
+  ) => {
+    if (originalUrl.includes('cloudinary.com')) {
+      // Extract the base URL and add optimization parameters
+      const parts = originalUrl.split('/upload/');
+      if (parts.length === 2) {
+        return `${parts[0]}/upload/f_auto,q_auto,w_${width},h_${height},c_fill/${parts[1]}`;
+      }
+    }
+    return originalUrl;
+  };
+
+  // Generate srcset for responsive images
+  const generateSrcSet = (originalUrl: string) => {
+    if (originalUrl.includes('cloudinary.com')) {
+      const parts = originalUrl.split('/upload/');
+      if (parts.length === 2) {
+        const base = `${parts[0]}/upload/f_auto,q_auto`;
+        return [
+          `${base},w_400,c_fill/${parts[1]} 400w`,
+          `${base},w_800,c_fill/${parts[1]} 800w`,
+          `${base},w_1200,c_fill/${parts[1]} 1200w`,
+          `${base},w_1600,c_fill/${parts[1]} 1600w`,
+        ].join(', ');
+      }
+    }
+    return '';
+  };
+
   return (
     <>
       <SEO
         title={blog.title}
         description={blog.description}
         keywords={`${blog.categories.join(', ')}, travel, blog, empire report`}
-        image={blog.image}
+        image={getOptimizedImageUrl(blog.image, 1200, 630)}
         url={`https://empire-reports.com/blogs/${blog.slug}`}
         type="article"
         author={blog.user.name}
         publishedTime={blog.createdAt.toString()}
+        modifiedTime={blog.updatedAt?.toString()}
+        categories={blog.categories}
+        tags={blog.categories} // Use categories as tags for now
       />
       <PageWrapper>
         <article className="md:-mt-10 relative">
@@ -138,13 +213,25 @@ const SingleBlogPage = () => {
             <p className="mb-5">{blog.description}</p>
           </header>
 
-          <img
-            src={blog.image}
-            alt={`Cover image for ${blog.title}`}
-            className="mb-6 md:mb-10 w-full max-h-[67vh] rounded-lg shadow-md object-cover object-center"
-            loading="eager"
-            fetchPriority="high"
-          />
+          <picture>
+            <source
+              srcSet={generateSrcSet(blog.image)}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 60vw"
+            />
+            <img
+              src={getOptimizedImageUrl(blog.image, 800, 450)}
+              alt={`Cover image for ${blog.title}`}
+              className="mb-6 md:mb-10 w-full max-h-[67vh] rounded-lg shadow-md object-cover object-center"
+              loading="eager"
+              fetchPriority="high"
+              width="800"
+              height="450"
+              onError={(e) => {
+                // Fallback to original image if optimized version fails
+                e.currentTarget.src = blog.image;
+              }}
+            />
+          </picture>
 
           <div className="flex flex-col items-center gap-5">
             <div>
